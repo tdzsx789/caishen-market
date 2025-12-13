@@ -1,4 +1,5 @@
 import { Card, Button, Space, message } from 'antd';
+import { history } from '@umijs/max';
 import React, { useState } from 'react';
 import styles from './index.less';
 
@@ -23,7 +24,12 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
   const [option2Yes, setOption2Yes] = useState<boolean | null>(null);
   const [option2No, setOption2No] = useState<boolean | null>(null);
 
-  const handleBet = (option: 'option1' | 'option2', choice: 'yes' | 'no') => {
+  const handleCardClick = () => {
+    history.push(`/SportsLotteryHall/detail/${data.id}`);
+  };
+
+  const handleBet = (e: React.MouseEvent, option: 'option1' | 'option2', choice: 'yes' | 'no') => {
+    e.stopPropagation(); // 阻止事件冒泡，避免触发卡片点击
     const optionData = option === 'option1' ? data.option1 : data.option2;
     
     if (option === 'option1') {
@@ -47,7 +53,7 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
   };
 
   return (
-    <Card className={styles.voteCard} title={data.title}>
+    <Card className={styles.voteCard} title={data.title} onClick={handleCardClick}>
       <div className={styles.description}>{data.description}</div>
       <div className={styles.betButtons}>
         <div className={styles.betOption}>
@@ -56,13 +62,13 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
           <Space className={styles.buttonGroup}>
             <Button
               type={option1Yes ? 'primary' : 'default'}
-              onClick={() => handleBet('option1', 'yes')}
+              onClick={(e) => handleBet(e, 'option1', 'yes')}
             >
               是
             </Button>
             <Button
               type={option1No ? 'primary' : 'default'}
-              onClick={() => handleBet('option1', 'no')}
+              onClick={(e) => handleBet(e, 'option1', 'no')}
             >
               否
             </Button>
@@ -74,13 +80,13 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
           <Space className={styles.buttonGroup}>
             <Button
               type={option2Yes ? 'primary' : 'default'}
-              onClick={() => handleBet('option2', 'yes')}
+              onClick={(e) => handleBet(e, 'option2', 'yes')}
             >
               是
             </Button>
             <Button
               type={option2No ? 'primary' : 'default'}
-              onClick={() => handleBet('option2', 'no')}
+              onClick={(e) => handleBet(e, 'option2', 'no')}
             >
               否
             </Button>

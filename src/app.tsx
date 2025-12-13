@@ -97,6 +97,7 @@ export const layout: RunTimeLayoutConfig = ({
       },
     ],
     menuHeaderRender: undefined,
+    menuRender: false, // 隐藏菜单栏
     childrenRender: (children) => {
       return (
         <>

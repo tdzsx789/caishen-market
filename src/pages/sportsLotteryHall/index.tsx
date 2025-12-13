@@ -21,6 +21,12 @@ const generateVoteData = (count: number) => {
   }));
 };
 
+// const tabLabel=()=>{
+//   const list = {
+//     all: require('@/public/images/tabs/all.png')
+//   }
+// }
+
 const SportsLotteryHall: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('1');
   const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({
@@ -30,7 +36,28 @@ const SportsLotteryHall: React.FC = () => {
     '4': 1,
     '5': 1,
   });
-
+  const [options, setOptions] = useState([[
+    {
+      key: '1',
+      label: '全部',
+    },
+    {
+      key: '2',
+      label: 'Bitcoin',
+    },
+    {
+      key: '3',
+      label: 'Tab 3',
+    },
+    {
+      key: '4',
+      label: 'Tab 4',
+    },
+    {
+      key: '5',
+      label: 'Tab 5',
+    },
+  ]])
   // 每个tab的数据（这里用模拟数据，实际应该从接口获取）
   const allVoteData = {
     '1': generateVoteData(32), // 32个数据，4页
@@ -70,53 +97,30 @@ const SportsLotteryHall: React.FC = () => {
   const total = getTotalCount();
 
   return (
-    <PageContainer>
-      <div className={styles.container}>
-        <Tabs
-          activeKey={activeTab}
-          onChange={handleTabChange}
-          items={[
-            {
-              key: '1',
-              label: 'Tab 1',
-            },
-            {
-              key: '2',
-              label: 'Tab 2',
-            },
-            {
-              key: '3',
-              label: 'Tab 3',
-            },
-            {
-              key: '4',
-              label: 'Tab 4',
-            },
-            {
-              key: '5',
-              label: 'Tab 5',
-            },
-          ]}
-        />
-        <div className={styles.content}>
-          <div className={styles.cardList}>
-            {currentData.map((item) => (
-              <VoteCard key={item.id} data={item} />
-            ))}
-          </div>
-          <div className={styles.pagination}>
-            <Pagination
-              current={currentPage[activeTab]}
-              total={total}
-              pageSize={pageSize}
-              onChange={handlePageChange}
-              showSizeChanger={false}
-              showTotal={(total) => `共 ${total} 条`}
-            />
-          </div>
+    <div className={styles.container}>
+      <Tabs
+        activeKey={activeTab}
+        onChange={handleTabChange}
+        items={}
+      />
+      <div className={styles.content}>
+        <div className={styles.cardList}>
+          {currentData.map((item) => (
+            <VoteCard key={item.id} data={item} />
+          ))}
+        </div>
+        <div className={styles.pagination}>
+          <Pagination
+            current={currentPage[activeTab]}
+            total={total}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+            showTotal={(total) => `共 ${total} 条`}
+          />
         </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };
 

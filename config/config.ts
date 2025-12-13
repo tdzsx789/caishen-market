@@ -47,13 +47,7 @@ export default defineConfig({
    * @doc antd的主题设置 https://ant.design/docs/react/customize-theme-cn
    * @doc umi 的 theme 配置 https://umijs.org/docs/api/config#theme
    */
-  // theme: { '@primary-color': '#1DA57A' }
-  /**
-   * @name moment 的国际化配置
-   * @description 如果对国际化没有要求，打开之后能减少js的包大小
-   * @doc https://umijs.org/docs/api/config#ignoremomentlocale
-   */
-  ignoreMomentLocale: true,
+  // theme: { '@primary-color': '#1DA57A' },
   /**
    * @name 代理配置
    * @description 可以让你的本地服务器代理到你的服务器上，这样你就可以访问服务器的数据了
@@ -85,7 +79,7 @@ export default defineConfig({
    */
   title: 'Ant Design Pro',
   layout: {
-    locale: true,
+    locale: false,
     ...defaultSettings,
   },
   /**
@@ -97,17 +91,7 @@ export default defineConfig({
     preset: 'antd',
     plugins: ['duration'],
   },
-  /**
-   * @name 国际化插件
-   * @doc https://umijs.org/docs/max/i18n
-   */
-  locale: {
-    // default zh-CN
-    default: 'zh-CN',
-    antd: true,
-    // default true, when it is true, will use `navigator.language` overwrite default
-    baseNavigator: true,
-  },
+  
   /**
    * @name antd 插件
    * @description 内置了 babel import 插件
