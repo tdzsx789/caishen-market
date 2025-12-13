@@ -1,14 +1,11 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Card, theme } from 'antd';
 import React from 'react';
 
-const Welcome: React.FC = () => {
+const Button: React.FC = () => {
   return (
-    <PageContainer>
-      11111
-    </PageContainer>
+    11111
   );
 };
 
-export default Welcome;
+export default Button;

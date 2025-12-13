@@ -13,6 +13,7 @@
           height: 100%;
           margin: 0;
           padding: 0;
+          background-color: #0D0D11;
         }
         #root {
           background-repeat: no-repeat;
@@ -140,7 +141,7 @@
 
         @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
           .ant-spin-blur {
-            background: #fff;
+            background: #12121A;
             opacity: 0.5;
           }
         }
