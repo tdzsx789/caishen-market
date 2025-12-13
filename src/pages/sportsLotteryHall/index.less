@@ -1,9 +1,10 @@
 .container {
-  padding: 24px;
   background: #0D0D11;
-
+  width: 100vw;
   .content {
     margin-top: 24px;
+    width: 1296px;
+    margin: 0 auto;
 
     .cardList {
       display: grid;
@@ -29,5 +30,48 @@
       justify-content: center;
       margin-top: 32px;
     }
+  }
+  .tabCard{
+    width: 100vw;
+    background-color: #12121A;
+    border-top: 1px solid #1E2939;
+    padding: 13px 0;
+    border-bottom: 1px solid #1E2939;
+  }
+  .tabGroup{
+    display: flex;
+    width: 1296px;
+    margin: 0 auto;
+    gap: 40px;
+    .tabItem{
+      padding: 7px 11px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      .text{
+        font-family: PingFang SC;
+        font-weight: 500;
+        font-size: 16px;
+        color: #99A1AF;
+        margin-left: 8px;
+        white-space: pre-line;
+      }
+    }
+    .activeItem{
+      background-color: #AA0F0A;
+      .text{
+        font-weight: bolder;
+        color: #FFFFFF;
+      }
+    }
+  }
+  .title{
+    width: 1296px;
+    margin: 18px auto;
+    font-family: PingFang SC;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 32px;
   }
 }

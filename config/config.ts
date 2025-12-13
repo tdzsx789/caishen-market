@@ -157,8 +157,9 @@ export default defineConfig({
    * @name 是否开启 mako
    * @description 使用 mako 极速研发
    * @doc https://umijs.org/docs/api/config#mako
+   * @note 已禁用 mako，使用 webpack 构建以确保热更新正常工作
    */
-  mako: {},
+  // mako: {},
   esbuildMinifyIIFE: true,
   requestRecord: {},
   exportStatic: {},

@@ -21,11 +21,24 @@ const generateVoteData = (count: number) => {
   }));
 };
 
-// const tabLabel=()=>{
-//   const list = {
-//     all: require('@/public/images/tabs/all.png')
-//   }
-// }
+const tabLabel=()=>{
+  const list = {
+    all: '/icons/pajamas_earth.svg',
+    Bitcoin: '/icons/formkit_bitcoin.svg',
+    Ethereum: '/icons/picon_ethereum.svg',
+    Solana: '/icons/token_solana.svg',
+    XRP: '/icons/Vector.svg',
+  }
+  const options = Object.keys(list).map((item,index) => {
+    return {
+      key: index,
+      icon: list[item as keyof typeof list],
+      text: item === 'all' ?  '全部' : item,
+      random: Math.floor(Math.random() * 100)
+    }
+  }) 
+  return options
+}
 
 const SportsLotteryHall: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('1');
@@ -36,28 +49,7 @@ const SportsLotteryHall: React.FC = () => {
     '4': 1,
     '5': 1,
   });
-  const [options, setOptions] = useState([[
-    {
-      key: '1',
-      label: '全部',
-    },
-    {
-      key: '2',
-      label: 'Bitcoin',
-    },
-    {
-      key: '3',
-      label: 'Tab 3',
-    },
-    {
-      key: '4',
-      label: 'Tab 4',
-    },
-    {
-      key: '5',
-      label: 'Tab 5',
-    },
-  ]])
+  const [options, setOptions] = useState(tabLabel())
   // 每个tab的数据（这里用模拟数据，实际应该从接口获取）
   const allVoteData = {
     '1': generateVoteData(32), // 32个数据，4页
@@ -76,7 +68,6 @@ const SportsLotteryHall: React.FC = () => {
     const end = start + pageSize;
     return allData.slice(start, end);
   };
-
   // 获取当前tab的总数据量
   const getTotalCount = () => {
     return allVoteData[activeTab as keyof typeof allVoteData]?.length || 0;
@@ -98,11 +89,17 @@ const SportsLotteryHall: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Tabs
-        activeKey={activeTab}
-        onChange={handleTabChange}
-        items={}
-      />
+      <div className={styles.tabCard}>
+        <div className={styles.tabGroup}>
+          {options.map((item,index) => (
+            <div className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} key={index} onClick={() => handleTabChange(String(index+1))}>
+              <img src={item.icon} alt={item.text} style={{ width: 20, height: 20 }} />
+              <div className={styles.text}>{item.text} <span>({item.random})</span></div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.title}>{options[Number(activeTab)-1]?.text}</div>
       <div className={styles.content}>
         <div className={styles.cardList}>
           {currentData.map((item) => (
@@ -116,7 +113,6 @@ const SportsLotteryHall: React.FC = () => {
             pageSize={pageSize}
             onChange={handlePageChange}
             showSizeChanger={false}
-            showTotal={(total) => `共 ${total} 条`}
           />
         </div>
       </div>

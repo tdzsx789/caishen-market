@@ -26,11 +26,11 @@ export default [
     path: '/SportsLotteryHall',
     name: '竞彩大厅',
     icon: 'smile',
-    component: './SportsLotteryHall',
+    component: './sportsLotteryHall',
     routes: [
       {
         path: '/SportsLotteryHall/detail/:id',
-        component: './SportsLotteryHall/detail',
+        component: './sportsLotteryHall/detail',
         hideInMenu: true,
       },
     ],
