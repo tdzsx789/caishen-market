@@ -21,10 +21,12 @@ const generateVoteData = (count: number) => {
     const tradingVolume = (isTime * 1000000 + 10000).toFixed(2);
     return {
       id: index + 1,
+      title: `投票项目 ${index + 1}`,
       description: `这是第 ${index + 1} 个投票项目的详细描述信息`,
+      activityDescription: `活动说明：这是一个关于加密货币市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在截止日期前结束，结果将在活动结束后公布。`,
       tradingVolume: parseFloat(tradingVolume), // 交易量
       endTime: endTime.toISOString(), // 结束时间
-      status: status as 'InProgress' | 'isEnd', // 状态
+      status: status as 'InProgress' | 'isStart' | 'isEnd', // 状态
       userBetStatus: isTime > 0.5, // 用户投注状态
       option1: {
         text: `选项A - ${index + 1}`,
@@ -34,6 +36,10 @@ const generateVoteData = (count: number) => {
         text: `选项B - ${index + 1}`,
         odds: '1.95',
       },
+      result: status === 'isEnd' ? {
+        option1: Math.random() > 0.5 ? 'yes' : 'no',
+        option2: Math.random() > 0.5 ? 'yes' : 'no',
+      } : undefined,
     };
   });
 };

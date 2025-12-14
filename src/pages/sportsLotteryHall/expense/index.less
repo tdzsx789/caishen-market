@@ -1,0 +1,114 @@
+.container {
+  padding: 24px;
+  background: #0D0D11;
+  min-height: 100vh;
+
+  :global {
+    .ant-pro-page-container {
+      background: #0D0D11;
+      
+      .ant-pro-page-container-children-content {
+        background: #0D0D11;
+      }
+    }
+  }
+
+  .summaryCard {
+    margin-bottom: 24px;
+    background: #12121A;
+    border: 1px solid #1E2939;
+    border-radius: 14px;
+
+    :global {
+      .ant-card-body {
+        background: #12121A;
+        padding: 24px;
+      }
+    }
+  }
+
+  .summaryRow {
+    display: flex;
+    justify-content: space-around;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .summaryItem {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .summaryLabel {
+    color: #99A1AF;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .summaryValue {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .tableCard {
+    background: #12121A;
+    border: 1px solid #1E2939;
+    border-radius: 14px;
+
+    :global {
+      .ant-card-body {
+        background: #12121A;
+        padding: 24px;
+      }
+    }
+  }
+
+  :global {
+    .ant-table {
+      background: #12121A;
+      color: #FFFFFF;
+
+      .ant-table-thead > tr > th {
+        background: #1A1A24;
+        border-bottom: 1px solid #1E2939;
+        color: #FFFFFF;
+      }
+
+      .ant-table-tbody > tr > td {
+        background: #12121A;
+        border-bottom: 1px solid #1E2939;
+        color: #FFFFFF;
+      }
+
+      .ant-table-tbody > tr:hover > td {
+        background: #1A1A24;
+      }
+
+      .ant-pagination {
+        .ant-pagination-item {
+          background: #1A1A24;
+          border-color: #1E2939;
+          
+          a {
+            color: #FFFFFF;
+          }
+
+          &.ant-pagination-item-active {
+            background: #AA0F0A;
+            border-color: #AA0F0A;
+          }
+        }
+
+        .ant-pagination-prev,
+        .ant-pagination-next {
+          .ant-pagination-item-link {
+            background: #1A1A24;
+            border-color: #1E2939;
+            color: #FFFFFF;
+          }
+        }
+      }
+    }
+  }
+}

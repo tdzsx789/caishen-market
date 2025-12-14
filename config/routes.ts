@@ -27,13 +27,21 @@ export default [
     name: '竞彩大厅',
     icon: 'smile',
     component: './sportsLotteryHall',
-    routes: [
-      {
-        path: '/SportsLotteryHall/detail/:id',
-        component: './sportsLotteryHall/detail',
-        hideInMenu: true,
-      },
-    ],
+  },
+  {
+    path: '/SportsLotteryHall/detail/:id',
+    component: './sportsLotteryHall/detail',
+    hideInMenu: true,
+  },
+  {
+    path: '/SportsLotteryHall/myOrders',
+    component: './sportsLotteryHall/myOrders',
+    hideInMenu: true,
+  },
+  {
+    path: '/SportsLotteryHall/expense',
+    component: './sportsLotteryHall/expense',
+    hideInMenu: true,
   },
   {
     path: '/',

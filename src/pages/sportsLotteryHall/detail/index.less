@@ -1,74 +1,300 @@
 .container {
-  padding: 24px;
-  background: #0D0D11;
-  min-height: 100vh;
+  width: 67.5%;
+  margin: 0 auto;
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+  
+  .statusCard {
+    max-width: 856px;
+    margin: 0 auto 16px;
+    background: #12121A;
+    border: 1px solid #1E2939;
+    border-radius: 14px;
 
-  :global {
-    .ant-pro-page-container {
-      background: #0D0D11;
-      
-      .ant-pro-page-container-children-content {
-        background: #0D0D11;
+    .description{
+      font-size: 24px;
+      line-height: 32px;
+      color: #FFFFFF;    
+    }
+
+    .tradeInfo {
+      display: flex;
+      flex-wrap: wrap;
+      .tradeItem {
+        width: 50%;
+        .label {
+          font-size: 14px;
+          line-height: 20px;
+          color: #99A1AF;
+        }
+        .value {
+          color: #FFFFFF;
+          font-size: 20px;
+          line-height: 28px;
+          margin-top: 4px;
+        }
+      }
+    }
+    :global {
+      .ant-card-body {
+        padding: 25px;
+        background: #12121A;
       }
     }
   }
 
-  .detailCard {
-    max-width: 800px;
-    margin: 0 auto;
+  .statusTag {
+    display: inline-block;
+    padding: 5.5px 9px;
+    margin: 16px 0;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    background: #1a1a1f;
-    border: 1px solid #2a2a2f;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 12px;
+    line-height: 16px;
+  }
 
-    :global {
-      .ant-card-head {
-        background: #1a1a1f;
-        border-bottom: 1px solid #2a2a2f;
-      }
-      
-      .ant-card-body {
-        background: #1a1a1f;
-      }
-    }
+  .statusInProgress {
+    background-color: #0D542B4D;
+    color: #05DF72;
+    border: 1px solid #016630;
+  }
 
-    .description {
-      margin-bottom: 24px;
-      padding: 16px;
-      background: #1a1a1f;
-      border-radius: 6px;
-      color: #ccc;
+  .statusIsStart {
+    background-color: #1C398E4D;
+    color: #51A2FF;
+    border: 1px solid #193CB8;
+  }
+
+  .statusIsEnd {
+    background-color: #1E293980;
+    color: #99A1AF;
+    border: 1px solid #364153;
+  }
+
+  .activityTitle{
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 20px;
+    line-height: 30px;
+    color: #FFFFFF;
+  }
+  .activityDescription {
+    font-size: 16px;
+    line-height: 26px;
+    color: #99A1AF;
+    margin-top: 15.5px;
+  }
+
+  .betPromptCard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .betPromptIcon {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  .betPromptContent {
+    flex: 1;
+  }
+
+  .betPromptTitle {
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .betPromptDesc {
+    color: #99A1AF;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .betSection {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .optionCard {
+    padding: 20px;
+    background: #1A1A24;
+    border-radius: 10px;
+    border: 1px solid #1E2939;
+  }
+
+  .optionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1E2939;
+  }
+
+  .optionTitle {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .optionOdds {
+    color: #99A1AF;
+    font-size: 14px;
+  }
+
+  .choiceRow {
+    display: flex;
+    gap: 16px;
+  }
+
+  .choiceItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .choiceButton {
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .betAmountDisplay {
+    color: #05DF72;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    background: #0D542B4D;
+    border-radius: 4px;
+    border: 1px solid #016630;
+  }
+
+  .amountSection {
+    padding: 20px;
+    background: #1A1A24;
+    border-radius: 10px;
+    border: 1px solid #1E2939;
+
+    .amountTitle {
+      color: #FFFFFF;
       font-size: 16px;
-      line-height: 1.8;
+      margin-bottom: 16px;
+      font-weight: 500;
     }
 
-    .betButtons {
+    .amountInput {
+      width: 100%;
+      margin-bottom: 12px;
+
+      :global {
+        .ant-input-number {
+          width: 100%;
+          background: #12121A;
+          border-color: #1E2939;
+          color: #FFFFFF;
+        }
+      }
+    }
+
+    .amountInfo {
+      color: #99A1AF;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .betActions {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      gap: 12px;
     }
 
-    .betOption {
-      padding: 20px;
-      background: #1a1a1f;
-      border-radius: 8px;
-      border: 1px solid #2a2a2f;
+    .confirmButton {
+      flex: 1;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 500;
+    }
 
-      .optionText {
-        font-weight: 600;
-        font-size: 18px;
-        margin-bottom: 8px;
+    .cancelButton {
+      flex: 1;
+      height: 48px;
+      font-size: 16px;
+    }
+  }
+
+  .resultSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .resultItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #1A1A24;
+    border-radius: 10px;
+    border: 1px solid #1E2939;
+
+    .resultLabel {
+      color: #99A1AF;
+      font-size: 14px;
+    }
+
+    .resultValue {
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+
+  .loginTip {
+    text-align: center;
+    padding: 40px 20px;
+    color: #99A1AF;
+
+    p {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+  }
+
+  .emptyRecords {
+    text-align: center;
+    padding: 40px 20px;
+    color: #99A1AF;
+    font-size: 14px;
+  }
+
+  :global {
+    .ant-table {
+      background: #12121A;
+      color: #FFFFFF;
+
+      .ant-table-thead > tr > th {
+        background: #1A1A24;
+        border-bottom: 1px solid #1E2939;
+        color: #FFFFFF;
       }
 
-      .optionOdds {
-        font-size: 14px;
-        color: #999;
-        margin-bottom: 16px;
+      .ant-table-tbody > tr > td {
+        background: #12121A;
+        border-bottom: 1px solid #1E2939;
+        color: #FFFFFF;
       }
 
-      .buttonGroup {
-        display: flex;
-        gap: 12px;
+      .ant-table-tbody > tr:hover > td {
+        background: #1A1A24;
       }
     }
   }
