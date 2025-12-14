@@ -11,8 +11,11 @@ interface VoteOption {
 interface VoteCardProps {
   data: {
     id: number;
-    title: string;
     description: string;
+    tradingVolume: number; // 交易量
+    endTime: string; // 结束时间
+    status: 'InProgress' | 'isStart' | 'isEnd'; // 状态
+    userBetStatus: boolean; // 用户投注状态
     option1: VoteOption;
     option2: VoteOption;
   };
@@ -23,7 +26,6 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
   const [option1No, setOption1No] = useState<boolean | null>(null);
   const [option2Yes, setOption2Yes] = useState<boolean | null>(null);
   const [option2No, setOption2No] = useState<boolean | null>(null);
-
   const handleCardClick = () => {
     history.push(`/SportsLotteryHall/detail/${data.id}`);
   };
@@ -51,47 +53,46 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
     }
     message.success(`已选择 ${optionData.text} - ${choice === 'yes' ? '是' : '否'}`);
   };
-
+  const statusList ={
+    InProgress: '进行中',
+    isStart: '即将开始',
+    isEnd: '已结束'
+  }
   return (
-    <Card className={styles.voteCard} title={data.title} onClick={handleCardClick}>
+    <Card className={styles.voteCard} onClick={handleCardClick}>
+      <div className={styles.metaInfo}>
+        {data.userBetStatus && <div className={styles.betStatus}>已投注</div>}
+        <div className={styles[data.status]}>
+          {statusList[data.status]}
+        </div>
+      </div>
       <div className={styles.description}>{data.description}</div>
       <div className={styles.betButtons}>
         <div className={styles.betOption}>
           <div className={styles.optionText}>{data.option1.text}</div>
           <div className={styles.optionOdds}>赔率: {data.option1.odds}</div>
           <Space className={styles.buttonGroup}>
-            <Button
-              type={option1Yes ? 'primary' : 'default'}
-              onClick={(e) => handleBet(e, 'option1', 'yes')}
-            >
-              是
-            </Button>
-            <Button
-              type={option1No ? 'primary' : 'default'}
-              onClick={(e) => handleBet(e, 'option1', 'no')}
-            >
-              否
-            </Button>
+            <div className={styles.yesButton}>是</div>
+            <div className={styles.NoButton}> 否</div>
           </Space>
         </div>
         <div className={styles.betOption}>
           <div className={styles.optionText}>{data.option2.text}</div>
           <div className={styles.optionOdds}>赔率: {data.option2.odds}</div>
           <Space className={styles.buttonGroup}>
-            <Button
-              type={option2Yes ? 'primary' : 'default'}
-              onClick={(e) => handleBet(e, 'option2', 'yes')}
-            >
-              是
-            </Button>
-            <Button
-              type={option2No ? 'primary' : 'default'}
-              onClick={(e) => handleBet(e, 'option2', 'no')}
-            >
-              否
-            </Button>
+            <div className={styles.yesButton}>是</div>
+            <div className={styles.NoButton}> 否</div>
           </Space>
         </div>
+      </div>
+      <div className={styles.line}></div>
+      <div className={styles.tradeVolume}>
+        <div className={styles.text}><img src="/icons/Icon.png" alt="" />交易量</div>
+        <div className={styles.number}>{data.tradingVolume.toLocaleString()}</div>
+      </div>
+      <div className={styles.tradeVolume}>
+        <div className={styles.text}><img src="/icons/Icon1.png" alt="" />结束时间</div>
+        <div className={styles.number}>{new Date(data.endTime).toLocaleString('zh-CN')}</div>
       </div>
     </Card>
   );

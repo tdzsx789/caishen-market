@@ -7,6 +7,10 @@ import proxy from './proxy';
 
 import routes from './routes';
 
+// 导入 PostCSS 插件
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pxToVw = require('../postcss-px-to-vw');
+
 const { REACT_APP_ENV = 'dev' } = process.env;
 
 /**
@@ -163,4 +167,16 @@ export default defineConfig({
   esbuildMinifyIIFE: true,
   requestRecord: {},
   exportStatic: {},
+  /**
+   * @name PostCSS 插件配置
+   * @description 自定义 PostCSS 插件，将 px 转换为 vw（基于 1920px 设计稿）
+   */
+  extraPostCSSPlugins: [
+    pxToVw({
+      viewportWidth: 1920, // 设计稿宽度
+      unitPrecision: 3, // 保留的小数位数
+      minPixelValue: 1, // 小于等于该值的 px 不转换
+      exclude: /node_modules/i, // 排除 node_modules
+    }),
+  ],
 });

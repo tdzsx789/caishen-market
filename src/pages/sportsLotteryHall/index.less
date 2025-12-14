@@ -1,9 +1,10 @@
 .container {
   background: #0D0D11;
   width: 100vw;
+  font-family: PingFang SC;
   .content {
     margin-top: 24px;
-    width: 1296px;
+    width: 67.5%;
     margin: 0 auto;
 
     .cardList {
@@ -28,7 +29,38 @@
     .pagination {
       display: flex;
       justify-content: center;
-      margin-top: 32px;
+      margin: 32px auto;
+      :global{
+        .ant-pagination-item,.ant-pagination-next,.ant-pagination-prev{
+          background-color: #1A1A24;
+          border: 1px solid #364153;
+          font-weight: 400;
+          padding: 0;
+          font-style: Regular;
+          font-size: 16px;
+          color: #99A1AF !important;
+          a{
+            color: #99A1AF !important;
+          }
+          .anticon,.anticon-right,.anticon-left{
+            width: 20px !important;
+            height: 20px !important;
+            svg{
+              fill: #fff;
+              width: 20px !important;
+              height: 20px !important;
+            }
+          }
+        }
+        .ant-pagination-item-active{
+          background-color: #AA0F0A;
+          border: 1px solid #AA0F0A;
+          color: #FFFFFF !important;
+          a{
+            color: #FFFFFF !important;
+          }
+        }
+      }
     }
   }
   .tabCard{
@@ -40,7 +72,8 @@
   }
   .tabGroup{
     display: flex;
-    width: 1296px;
+    width: 67.5%;
+    flex-wrap: wrap;
     margin: 0 auto;
     gap: 40px;
     .tabItem{
@@ -49,8 +82,11 @@
       border-radius: 10px;
       display: flex;
       align-items: center;
+      .icon{ 
+        width: 20px;
+        height: 20px;
+      }
       .text{
-        font-family: PingFang SC;
         font-weight: 500;
         font-size: 16px;
         color: #99A1AF;
@@ -67,9 +103,8 @@
     }
   }
   .title{
-    width: 1296px;
+    width: 67.5%;
     margin: 18px auto;
-    font-family: PingFang SC;
     font-weight: 400;
     font-size: 24px;
     line-height: 32px;

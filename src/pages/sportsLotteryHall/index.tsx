@@ -6,19 +6,36 @@ import styles from './index.less';
 
 // 模拟投票数据
 const generateVoteData = (count: number) => {
-  return Array.from({ length: count }, (_, index) => ({
-    id: index + 1,
-    title: `投票项目 ${index + 1}`,
-    description: `这是第 ${index + 1} 个投票项目的详细描述信息`,
-    option1: {
-      text: `选项A - ${index + 1}`,
-      odds: '1.85',
-    },
-    option2: {
-      text: `选项B - ${index + 1}`,
-      odds: '1.95',
-    },
-  }));
+  return Array.from({ length: count }, (_, index) => {
+    // 随机生成状态：进行中或已结束
+    const isTime = Math.random();
+    const status = isTime > 0.7 ? 'isEnd' :isTime > 0.5 ? 'isStart' : 'InProgress';
+    
+    // 生成结束时间（如果是已结束，时间在过去；如果是进行中，时间在未来）
+    const now = new Date();
+    const endTime = isTime > 0.7  
+      ? new Date(now.getTime() -isTime * 7 * 24 * 60 * 60 * 1000) // 过去7天内
+      : new Date(now.getTime() +isTime * 7 * 24 * 60 * 60 * 1000); // 未来7天内
+    
+    // 随机生成交易量（单位：USDT）
+    const tradingVolume = (isTime * 1000000 + 10000).toFixed(2);
+    return {
+      id: index + 1,
+      description: `这是第 ${index + 1} 个投票项目的详细描述信息`,
+      tradingVolume: parseFloat(tradingVolume), // 交易量
+      endTime: endTime.toISOString(), // 结束时间
+      status: status as 'InProgress' | 'isEnd', // 状态
+      userBetStatus: isTime > 0.5, // 用户投注状态
+      option1: {
+        text: `选项A - ${index + 1}`,
+        odds: '1.85',
+      },
+      option2: {
+        text: `选项B - ${index + 1}`,
+        odds: '1.95',
+      },
+    };
+  });
 };
 
 const tabLabel=()=>{
@@ -93,7 +110,7 @@ const SportsLotteryHall: React.FC = () => {
         <div className={styles.tabGroup}>
           {options.map((item,index) => (
             <div className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} key={index} onClick={() => handleTabChange(String(index+1))}>
-              <img src={item.icon} alt={item.text} style={{ width: 20, height: 20 }} />
+              <img src={item.icon} className={styles.icon} alt={item.text} />
               <div className={styles.text}>{item.text} <span>({item.random})</span></div>
             </div>
           ))}
