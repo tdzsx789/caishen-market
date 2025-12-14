@@ -87,96 +87,77 @@
     margin-top: 15.5px;
   }
 
-  .betPromptCard {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-  }
+  .forecastResultsCard {
+    .forecastResultsTitle{
+      font-size: 16px;
+      line-height: 24px;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+    .tableTH{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      line-height: 20px;
+      color: #99A1AF;
+      .tableTHItem1{
+        width: 45%;
+      }
+      .tableTHItem2{
+        width: 27%;
+      }
+      .tableTHItem{
+        width: 10%;
+        text-align: center;
+      }
+    }
+    .line{
+      width: 100%;
+      height: 1px;
+      margin-top: 9px;
+      background-color: #364153;
+    }
+    .tableTR{
+      height: 63px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      line-height: 20px;
+      color: #FFFFFF;
 
-  .betPromptIcon {
-    font-size: 48px;
-    line-height: 1;
-  }
-
-  .betPromptContent {
-    flex: 1;
-  }
-
-  .betPromptTitle {
-    color: #FFFFFF;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .betPromptDesc {
-    color: #99A1AF;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .betSection {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .optionCard {
-    padding: 20px;
-    background: #1A1A24;
-    border-radius: 10px;
-    border: 1px solid #1E2939;
-  }
-
-  .optionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #1E2939;
-  }
-
-  .optionTitle {
-    color: #FFFFFF;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .optionOdds {
-    color: #99A1AF;
-    font-size: 14px;
-  }
-
-  .choiceRow {
-    display: flex;
-    gap: 16px;
-  }
-
-  .choiceItem {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .choiceButton {
-    width: 100%;
-    height: 48px;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
-  .betAmountDisplay {
-    color: #05DF72;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 4px 12px;
-    background: #0D542B4D;
-    border-radius: 4px;
-    border: 1px solid #016630;
+      .tableTRItem1{
+        width: 45%;
+      }
+      .tableTRItem2{
+        width: 27%;
+      }
+      .tableTRItem{
+        width: 10%;
+        font-size: 14px;
+        line-height: 20px;
+        .yewBtn{
+          padding: 8px 16px;
+          border-radius: 10px;
+          text-align: center;
+          margin: 0 auto;
+          width: max-content;
+          color: #FFFFFF;
+          background-color: #00A63E;
+        }
+        .noBtn{
+          padding: 8px 16px;
+          border-radius: 10px;
+          text-align: center;
+          margin: 0 auto;
+          width: max-content;
+          color: #FB2C36;
+          background-color: #AA0F0A33;
+          border: 1px solid #AA0F0A66;
+        }
+      }
+    }
   }
 
   .amountSection {
@@ -230,7 +211,6 @@
       font-size: 16px;
     }
   }
-
   .resultSection {
     display: flex;
     flex-direction: column;
@@ -268,34 +248,26 @@
       font-size: 16px;
     }
   }
-
+  .betSectionCard{
+    .betSectionTitle{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      line-height: 24px;
+      color: #FFFFFF;
+      margin-bottom: 16.5px;
+      .viewMore{
+        font-size: 14px;
+        line-height: 20px;
+        color: #99A1AF;
+      }
+    }
+  }
   .emptyRecords {
     text-align: center;
     padding: 40px 20px;
     color: #99A1AF;
     font-size: 14px;
-  }
-
-  :global {
-    .ant-table {
-      background: #12121A;
-      color: #FFFFFF;
-
-      .ant-table-thead > tr > th {
-        background: #1A1A24;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr > td {
-        background: #12121A;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr:hover > td {
-        background: #1A1A24;
-      }
-    }
   }
 }

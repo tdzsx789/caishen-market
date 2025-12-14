@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Card, Space, message, Input, InputNumber, Table, Tag } from 'antd';
+import { Button, Card, Space, message, Input, InputNumber, Table, Tag, Radio } from 'antd';
 import { history, useParams, useModel, useLocation } from '@umijs/max';
 import PageBack from '@/components/PageBack'
 import React, { useState } from 'react';
@@ -41,7 +41,7 @@ interface VoteData {
 // 模拟获取详情数据（实际应该从接口获取）
 const getVoteDetail = (id: string): VoteData | null => {
   const voteId = parseInt(id);
-  const isTime = Math.random();
+  const isTime = 0.4;
   const status = isTime > 0.7 ? 'isEnd' : isTime > 0.5 ? 'isStart' : 'InProgress';
   
   const now = new Date();
@@ -52,7 +52,7 @@ const getVoteDetail = (id: string): VoteData | null => {
   const tradingVolume = (isTime * 1000000 + 10000).toFixed(2);
   
   // 模拟个人投注记录
-  const userBetRecords: BetRecord[] = isTime > 0.4 ? [
+  const userBetRecords: BetRecord[] = [
     {
       id: 1,
       option: `选项A - ${voteId}`,
@@ -71,13 +71,13 @@ const getVoteDetail = (id: string): VoteData | null => {
       time: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(),
       status: status === 'isEnd' ? (Math.random() > 0.5 ? 'win' : 'lose') : 'pending',
     },
-  ] : [];
+  ];
   
   return {
     id: voteId,
     title: `投票项目 ${voteId}`,
     description: `这是第 ${voteId} 个投票项目的详细描述信息`,
-    activityDescription: `活动说明：这是一个关于加密货币市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在截止日期前结束，结果将在活动结束后公布。`,
+    activityDescription: `预测比特币价格是否会在2025年1月31日前突破12万美元大关。`,
     tradingVolume: parseFloat(tradingVolume),
     endTime: endTime.toISOString(),
     status: status as 'InProgress' | 'isStart' | 'isEnd',
@@ -102,7 +102,6 @@ const VoteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { initialState } = useModel('@@initialState');
   const isLoggedIn = !!initialState?.currentUser;
-  
   const voteData = id ? getVoteDetail(id) : null;
   // 记录每个选项的是/否的下注金额
   const [betAmounts, setBetAmounts] = useState<{
@@ -128,15 +127,11 @@ const VoteDetail: React.FC = () => {
     return (
       <PageContainer>
         <div className={styles.container}>
-          <Card>未找到投票详情</Card>
+          <Card>暂无数据</Card>
         </div>
       </PageContainer>
     );
   }
-
-  const handleBack = () => {
-    history.back();
-  };
 
   // 处理下注按钮点击
   const handleBetClick = (option: 'option1' | 'option2', choice: 'yes' | 'no') => {
@@ -147,43 +142,7 @@ const VoteDetail: React.FC = () => {
     }
     setCurrentBet({ option, choice, amount: 0 });
   };
-
-  // 确认下注
-  const handleConfirmBet = () => {
-    if (!currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0) {
-      message.warning('请输入下注金额');
-      return;
-    }
-
-    const optionData = currentBet.option === 'option1' ? voteData.option1 : voteData.option2;
-    const newRecord: BetRecord = {
-      id: Date.now(),
-      option: optionData.text,
-      choice: currentBet.choice,
-      amount: currentBet.amount,
-      odds: optionData.odds,
-      time: new Date().toISOString(),
-      status: 'pending',
-    };
-
-    // 更新下注金额记录
-    setBetAmounts((prev) => ({
-      ...prev,
-      [currentBet.option!]: {
-        ...prev[currentBet.option!],
-        [currentBet.choice]: prev[currentBet.option!][currentBet.choice] + currentBet.amount,
-      },
-    }));
-
-    setUserBetRecords([...userBetRecords, newRecord]);
-    message.success(`下注成功：${optionData.text} - ${currentBet.choice === 'yes' ? '是' : '否'}，金额：${currentBet.amount} USDT`);
-    setCurrentBet({ option: null, choice: null, amount: 0 });
-  };
-
-  // 取消下注
-  const handleCancelBet = () => {
-    setCurrentBet({ option: null, choice: null, amount: 0 });
-  };
+  
 
   const statusConfig = {
     InProgress: { text: '进行中', className: styles.statusInProgress },
@@ -192,48 +151,6 @@ const VoteDetail: React.FC = () => {
   };
 
   const statusInfo = statusConfig[voteData.status];
-
-  // 投注记录表格列
-  const betRecordColumns = [
-    {
-      title: '选项',
-      dataIndex: 'option',
-      key: 'option',
-    },
-    {
-      title: '预测',
-      dataIndex: 'choice',
-      key: 'choice',
-      render: (choice: string) => choice === 'yes' ? '是' : '否',
-    },
-    {
-      title: '下注金额',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (amount: number) => `${amount} USDT`,
-    },
-    {
-      title: '赔率',
-      dataIndex: 'odds',
-      key: 'odds',
-    },
-    {
-      title: '时间',
-      dataIndex: 'time',
-      key: 'time',
-      render: (time: string) => new Date(time).toLocaleString('zh-CN'),
-    },
-    ...(voteData.status === 'isEnd' ? [{
-      title: '结果',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => {
-        if (status === 'win') return <Tag color="green">获胜</Tag>;
-        if (status === 'lose') return <Tag color="red">失败</Tag>;
-        return <Tag>待定</Tag>;
-      },
-    }] : []),
-  ];
 
   const handleGoToOrders = () => {
     history.push('/SportsLotteryHall/myOrders');
@@ -258,6 +175,38 @@ const VoteDetail: React.FC = () => {
           </div>
         </div>
       </Card>
+      {['InProgress','isStart'].includes(voteData.status) && (
+        <Card className={`${styles.statusCard} ${styles.forecastResultsCard}`}>
+          <div className={styles.forecastResultsTitle}>选择预测结果</div>
+          <div className={styles.tableTH}>
+            <div className={styles.tableTHItem1}>结果</div>
+            <div className={styles.tableTHItem2}>概率</div>
+            <div className={styles.tableTHItem} style={{color:'#00C950'}}>是</div>
+            <div className={styles.tableTHItem} style={{color:'#FB2C36'}}>否</div>
+          </div>
+          <div className={styles.line}></div>
+          <div className={styles.tableTR}>
+            <div className={styles.tableTRItem1}>{voteData.option1.text}</div>
+            <div className={styles.tableTRItem2}>{voteData.option1.odds}</div>
+            <div className={`${styles.tableTRItem}`}>
+              <div className={styles.yewBtn}>{betAmounts.option1.yes}¢</div>
+            </div>
+            <div className={styles.tableTRItem}>
+              <div className={styles.noBtn}>{betAmounts.option1.no}¢</div>
+            </div>
+          </div>
+          <div className={styles.tableTR}>
+            <div className={styles.tableTRItem1}>{voteData.option2.text}</div>
+            <div className={styles.tableTRItem2}>{voteData.option2.odds}</div>
+            <div className={`${styles.tableTRItem}`}>
+              <div className={styles.yewBtn}>{betAmounts.option2.yes}¢</div>
+            </div>
+            <div className={styles.tableTRItem}>
+              <div className={styles.noBtn}>{betAmounts.option2.no}¢</div>
+            </div>
+          </div>
+        </Card>
+      )}
       {/* 活动说明 */}
       <Card className={styles.statusCard}>
         <div className={styles.activityTitle}>活动说明</div>
@@ -265,181 +214,75 @@ const VoteDetail: React.FC = () => {
           {voteData.activityDescription}
         </div>
       </Card>
-      {/* 下注区域（进行中和即将开始时显示） */}
-      {(voteData.status === 'InProgress' || voteData.status === 'isStart') && (
-        <Card className={styles.detailCard} title="预测下注">
-          <div className={styles.betSection}>
-            {/* 选项1 */}
-            <div className={styles.optionCard}>
-              <div className={styles.optionHeader}>
-                <div className={styles.optionTitle}>{voteData.option1.text}</div>
-                <div className={styles.optionOdds}>赔率: {voteData.option1.odds}</div>
-              </div>
-              <div className={styles.choiceRow}>
-                <div className={styles.choiceItem}>
-                  <Button
-                    type={currentBet.option === 'option1' && currentBet.choice === 'yes' ? 'primary' : 'default'}
-                    size="large"
-                    className={styles.choiceButton}
-                    onClick={() => handleBetClick('option1', 'yes')}
-                  >
-                    是
-                  </Button>
-                  {betAmounts.option1.yes > 0 && (
-                    <div className={styles.betAmountDisplay}>
-                      已下注: {betAmounts.option1.yes.toFixed(2)} USDT
-                    </div>
-                  )}
-                </div>
-                <div className={styles.choiceItem}>
-                  <Button
-                    type={currentBet.option === 'option1' && currentBet.choice === 'no' ? 'primary' : 'default'}
-                    size="large"
-                    className={styles.choiceButton}
-                    onClick={() => handleBetClick('option1', 'no')}
-                  >
-                    否
-                  </Button>
-                  {betAmounts.option1.no > 0 && (
-                    <div className={styles.betAmountDisplay}>
-                      已下注: {betAmounts.option1.no.toFixed(2)} USDT
-                    </div>
-                  )}
-                </div>
-              </div>
+      <div className={styles.betSection}>
+        {/* 下注金额输入区域 */}
+        {currentBet.option && currentBet.choice && (
+          <div className={styles.amountSection}>
+            <div className={styles.amountTitle}>
+              为 {currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text} - {currentBet.choice === 'yes' ? '是' : '否'} 下注
             </div>
-
-            {/* 选项2 */}
-            <div className={styles.optionCard}>
-              <div className={styles.optionHeader}>
-                <div className={styles.optionTitle}>{voteData.option2.text}</div>
-                <div className={styles.optionOdds}>赔率: {voteData.option2.odds}</div>
-              </div>
-              <div className={styles.choiceRow}>
-                <div className={styles.choiceItem}>
-                  <Button
-                    type={currentBet.option === 'option2' && currentBet.choice === 'yes' ? 'primary' : 'default'}
-                    size="large"
-                    className={styles.choiceButton}
-                    onClick={() => handleBetClick('option2', 'yes')}
-                  >
-                    是
-                  </Button>
-                  {betAmounts.option2.yes > 0 && (
-                    <div className={styles.betAmountDisplay}>
-                      已下注: {betAmounts.option2.yes.toFixed(2)} USDT
-                    </div>
-                  )}
-                </div>
-                <div className={styles.choiceItem}>
-                  <Button
-                    type={currentBet.option === 'option2' && currentBet.choice === 'no' ? 'primary' : 'default'}
-                    size="large"
-                    className={styles.choiceButton}
-                    onClick={() => handleBetClick('option2', 'no')}
-                  >
-                    否
-                  </Button>
-                  {betAmounts.option2.no > 0 && (
-                    <div className={styles.betAmountDisplay}>
-                      已下注: {betAmounts.option2.no.toFixed(2)} USDT
-                    </div>
-                  )}
-                </div>
-              </div>
+            <InputNumber
+              className={styles.amountInput}
+              min={0.01}
+              precision={2}
+              value={currentBet.amount}
+              onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
+              placeholder="请输入下注金额"
+            />
+            <div className={styles.amountInfo}>
+              预计收益：{currentBet.amount > 0 ? (currentBet.amount * parseFloat(currentBet.option === 'option1' ? voteData.option1.odds : voteData.option2.odds)).toFixed(2) : '0.00'} USDT
             </div>
-
-            {/* 下注金额输入区域 */}
-            {currentBet.option && currentBet.choice && (
-              <div className={styles.amountSection}>
-                <div className={styles.amountTitle}>
-                  为 {currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text} - {currentBet.choice === 'yes' ? '是' : '否'} 下注
-                </div>
-                <InputNumber
-                  className={styles.amountInput}
-                  min={0.01}
-                  precision={2}
-                  value={currentBet.amount}
-                  onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
-                  placeholder="请输入下注金额"
-                />
-                <div className={styles.amountInfo}>
-                  预计收益：{currentBet.amount > 0 ? (currentBet.amount * parseFloat(currentBet.option === 'option1' ? voteData.option1.odds : voteData.option2.odds)).toFixed(2) : '0.00'} USDT
-                </div>
-                <div className={styles.betActions}>
-                  <Button
-                    type="primary"
-                    size="large"
-                    className={styles.confirmButton}
-                    onClick={handleConfirmBet}
-                    disabled={!currentBet.amount || currentBet.amount <= 0}
-                  >
-                    确认下注
-                  </Button>
-                  <Button
-                    size="large"
-                    className={styles.cancelButton}
-                    onClick={handleCancelBet}
-                  >
-                    取消
-                  </Button>
-                </div>
-              </div>
-            )}
+            <div className={styles.betActions}>
+              {/* <Button
+                type="primary"
+                size="large"
+                className={styles.confirmButton}
+                onClick={handleConfirmBet}
+                disabled={!currentBet.amount || currentBet.amount <= 0}
+              >
+                确认下注
+              </Button>
+              <Button
+                size="large"
+                className={styles.cancelButton}
+                onClick={handleCancelBet}
+              >
+                取消
+              </Button> */}
+            </div>
           </div>
-        </Card>
-      )}
-
+        )}
+      </div>
       {/* 投注结果（已结束时显示） */}
       {voteData.status === 'isEnd' && voteData.result && (
-        <Card className={styles.detailCard} title="投注结果">
-          <div className={styles.resultSection}>
-            <div className={styles.resultItem}>
-              <div className={styles.resultLabel}>{voteData.option1.text}</div>
-              <div className={styles.resultValue}>
-                {voteData.result.option1 === 'yes' ? '是' : '否'}
+        <>
+          {/* 结果展示内容card */}
+          <Card className={styles.detailCard} title="投注结果">
+            <div className={styles.resultSection}>
+              <div className={styles.resultItem}>
+                <div className={styles.resultLabel}>{voteData.option1.text}</div>
+                <div className={styles.resultValue}>
+                  {voteData.result.option1 === 'yes' ? '是' : '否'}
+                </div>
+              </div>
+              <div className={styles.resultItem}>
+                <div className={styles.resultLabel}>{voteData.option2.text}</div>
+                <div className={styles.resultValue}>
+                  {voteData.result.option2 === 'yes' ? '是' : '否'}
+                </div>
               </div>
             </div>
-            <div className={styles.resultItem}>
-              <div className={styles.resultLabel}>{voteData.option2.text}</div>
-              <div className={styles.resultValue}>
-                {voteData.result.option2 === 'yes' ? '是' : '否'}
-              </div>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </>
       )}
 
       {/* 个人投注记录（进行中和已结束时显示，即将开始时不显示） */}
-      {voteData.status !== 'isStart' && (
-        <Card 
-          className={styles.detailCard} 
-          title="个人投注记录"
-          extra={
-            <Button type="link" onClick={handleGoToOrders}>
-              查看全部订单
-            </Button>
-          }
-        >
-          {!isLoggedIn ? (
-            <div className={styles.loginTip}>
-              <p>请先登录查看个人投注记录</p>
-              <Button type="primary" onClick={() => history.push('/user/login')}>
-                立即登录
-              </Button>
-            </div>
-          ) : userBetRecords.length > 0 ? (
-            <Table
-              columns={betRecordColumns}
-              dataSource={userBetRecords}
-              rowKey="id"
-              pagination={false}
-            />
-          ) : (
-            <div className={styles.emptyRecords}>暂无投注记录</div>
-          )}
-        </Card>
-      )}
+      {voteData.status !== 'isStart' && userBetRecords.length > 0 && <Card className={`${styles.statusCard} ${styles.betSectionCard}`} >
+        <div className={styles.betSectionTitle}>
+          个人投注记录
+          <div className={styles.viewMore} onClick={handleGoToOrders}>查看更多</div>
+        </div>
+      </Card>}
     </div>
   );
 };

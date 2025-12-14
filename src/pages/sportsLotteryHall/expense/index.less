@@ -1,114 +1,129 @@
 .container {
-  padding: 24px;
-  background: #0D0D11;
-  min-height: 100vh;
-
-  :global {
-    .ant-pro-page-container {
-      background: #0D0D11;
-      
-      .ant-pro-page-container-children-content {
-        background: #0D0D11;
-      }
-    }
-  }
-
-  .summaryCard {
+  width: 67.5%;
+  margin: 0 auto;
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+  .title{
+    font-size: 30px;
+    line-height: 36px;
+    color: #FFFFFF;
     margin-bottom: 24px;
-    background: #12121A;
-    border: 1px solid #1E2939;
-    border-radius: 14px;
-
-    :global {
-      .ant-card-body {
-        background: #12121A;
-        padding: 24px;
+  }
+  
+  :global {
+    .ant-pagination {
+      display: flex;
+      justify-content: center;
+    }
+    .ant-pagination-item,.ant-pagination-next,.ant-pagination-prev{
+      min-width: 40px;
+      height: 40px;
+      background-color: #1A1A24;
+      border: 1px solid #364153;
+      font-weight: 400;
+      padding: 0;
+      font-style: Regular;
+      font-size: 16px;
+      color: #99A1AF !important;
+      a,.ant-pagination-item-link{
+        width: 40px !important;
+        height: 40px !important;
+        color: #99A1AF !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .anticon,.anticon-right,.anticon-left{
+        width: 20px !important;
+        height: 20px !important;
+        svg{
+          fill: #fff;
+          width: 20px !important;
+          height: 20px !important;
+        }
       }
     }
-  }
-
-  .summaryRow {
-    display: flex;
-    justify-content: space-around;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .summaryItem {
-    flex: 1;
-    min-width: 200px;
-    text-align: center;
-  }
-
-  .summaryLabel {
-    color: #99A1AF;
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
-
-  .summaryValue {
-    font-size: 24px;
-    font-weight: 600;
+    .ant-pagination-item-active{
+      background-color: #AA0F0A;
+      border: 1px solid #AA0F0A;
+      color: #FFFFFF !important;
+      a{
+        color: #FFFFFF !important;
+      }
+    }
   }
 
   .tableCard {
     background: #12121A;
     border: 1px solid #1E2939;
     border-radius: 14px;
-
+    .tag{
+      width: max-content;
+      font-size: 12px;
+      line-height: 16px;
+      padding: 5px 13px;
+      border-radius: 4px;
+    }
+    .betClass{
+      color: #FF6900;
+      background-color: #FF690033;
+      border: 1px solid #FF69004D;
+    }
+    .winClass{
+      background-color: #00C95033;
+      border: 1px solid #00C9504D;
+      color: #00C950;
+    }
+    .notWinClass{
+      background-color: #6A728233;
+      border: 1px solid #6A72824D;
+      color: #6A7282;
+    }
+    .income,.expense{
+      font-size: 16px;
+      text-align: right;
+      line-height: 24px;
+    }
     :global {
-      .ant-card-body {
-        background: #12121A;
-        padding: 24px;
-      }
-    }
-  }
-
-  :global {
-    .ant-table {
-      background: #12121A;
-      color: #FFFFFF;
-
-      .ant-table-thead > tr > th {
-        background: #1A1A24;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr > td {
-        background: #12121A;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr:hover > td {
-        background: #1A1A24;
-      }
-
-      .ant-pagination {
-        .ant-pagination-item {
-          background: #1A1A24;
-          border-color: #1E2939;
-          
-          a {
-            color: #FFFFFF;
-          }
-
-          &.ant-pagination-item-active {
-            background: #AA0F0A;
-            border-color: #AA0F0A;
+      .ant-table-thead{
+        border-radius: 14px;
+        background-color: #12121A;
+        height: 53px !important;
+        font-family: PingFang SC;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 14px;
+        line-height: 20px;
+        .ant-table-cell{
+          padding: 16px 24px;
+          background-color: #12121A;
+          border-bottom: 1px solid #1E2939;
+          &::before{
+            content: '';
+            width: 0 !important;
           }
         }
+      }
+      .ant-table-tbody {
+        background: #1A1A24;
+        font-family: PingFang SC;
+        font-weight: 400;
+        font-style: Regular;
 
-        .ant-pagination-prev,
-        .ant-pagination-next {
-          .ant-pagination-item-link {
-            background: #1A1A24;
-            border-color: #1E2939;
-            color: #FFFFFF;
-          }
+        .ant-table-cell{
+          font-size: 14px;
+          line-height: 20px;
+          padding: 16px 24px;
+          color: #D1D5DC;
+          border-bottom: 1px solid #1E2939;
+        }
+        
+        .ant-table-cell-row-hover{
+          background-color: #12121ab6;
         }
       }
     }
   }
+
 }

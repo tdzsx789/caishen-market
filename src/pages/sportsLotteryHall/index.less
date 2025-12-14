@@ -31,7 +31,13 @@
       justify-content: center;
       margin: 32px auto;
       :global{
+        .ant-pagination {
+          display: flex;
+          justify-content: center;
+        }
         .ant-pagination-item,.ant-pagination-next,.ant-pagination-prev{
+          min-width: 40px;
+          height: 40px;
           background-color: #1A1A24;
           border: 1px solid #364153;
           font-weight: 400;
@@ -39,8 +45,13 @@
           font-style: Regular;
           font-size: 16px;
           color: #99A1AF !important;
-          a{
+          a,.ant-pagination-item-link{
+            width: 40px !important;
+            height: 40px !important;
             color: #99A1AF !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
           .anticon,.anticon-right,.anticon-left{
             width: 20px !important;

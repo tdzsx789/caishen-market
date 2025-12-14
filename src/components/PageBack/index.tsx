@@ -2,9 +2,12 @@ import { history } from '@umijs/max';
 import React from 'react';
 import styles from './index.less';
 
-const PageBack: React.FC = (props) => {
+interface PageBackProps {
+  title?: string;
+}
+
+const PageBack: React.FC<PageBackProps> = (props) => {
   const { title } = props;
-   console.log("🚀 ~ Button ~ title:", title)
    const handleBack = () => {
     history.back();
   };

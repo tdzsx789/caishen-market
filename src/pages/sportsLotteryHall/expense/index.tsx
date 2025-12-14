@@ -1,13 +1,12 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { Card, Table, Button, Tag } from 'antd';
-import { history } from '@umijs/max';
+import { Table } from 'antd';
+import PageBack from '@/components/PageBack'
 import React, { useState } from 'react';
 import styles from './index.less';
 
 interface ExpenseRecord {
   id: number;
   time: string;
-  type: 'bet' | 'win' | 'withdraw' | 'deposit';
+  type: 'bet' | 'win' | 'notWin' ;
   name: string;
   income: number; // 收入
   expense: number; // 支出
@@ -15,24 +14,18 @@ interface ExpenseRecord {
 
 // 模拟数据
 const generateExpenseRecords = (count: number): ExpenseRecord[] => {
-  const types: ExpenseRecord['type'][] = ['bet', 'win', 'withdraw', 'deposit'];
-  const typeNames = {
-    bet: '投注',
-    win: '获胜奖励',
-    withdraw: '提现',
-    deposit: '充值',
-  };
+  const types: ExpenseRecord['type'][] = ['bet', 'win', 'notWin'];
 
   return Array.from({ length: count }, (_, index) => {
     const type = types[Math.floor(Math.random() * types.length)];
-    const isIncome = type === 'win' || type === 'deposit';
+    const isIncome = type === 'win';
     const amount = Math.floor(Math.random() * 5000) + 100;
 
     return {
       id: index + 1,
       time: new Date(Date.now() - index * 2 * 60 * 60 * 1000).toISOString(),
-      type,
-      name: typeNames[type],
+      type: type,
+      name: '比特币(BTC)价格会在2025年1月31日前突破12万美元吗?',
       income: isIncome ? amount : 0,
       expense: !isIncome ? amount : 0,
     };
@@ -41,14 +34,8 @@ const generateExpenseRecords = (count: number): ExpenseRecord[] => {
 
 const Expense: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 10;
-
-  const allRecords = generateExpenseRecords(45);
-
-  // 计算总计
-  const totalIncome = allRecords.reduce((sum, record) => sum + record.income, 0);
-  const totalExpense = allRecords.reduce((sum, record) => sum + record.expense, 0);
-  const netAmount = totalIncome - totalExpense;
+  const pageSize = 8;
+  const allRecords = generateExpenseRecords(25);
 
   // 表格列
   const columns = [
@@ -64,28 +51,30 @@ const Expense: React.FC = () => {
       key: 'type',
       render: (type: string) => {
         const typeConfig = {
-          bet: { text: '投注', color: 'orange' },
-          win: { text: '获胜奖励', color: 'green' },
-          withdraw: { text: '提现', color: 'blue' },
-          deposit: { text: '充值', color: 'purple' },
+          bet: { text: '投注',class: 'betClass' },
+          win: { text: '中奖',class: 'winClass' },
+          notWin: { text: '未中奖',class: 'notWinClass' },
         };
         const config = typeConfig[type as keyof typeof typeConfig];
-        return <Tag color={config.color}>{config.text}</Tag>;
+        return <div className={`${styles.tag} ${styles[config.class]}`}>{config.text}</div>;
       },
     },
     {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
+      render: (name: string) => {
+        return <span style={{ color: '#FFFFFF' }}>{name}</span>;
+      }
     },
     {
       title: '收入',
       dataIndex: 'income',
       key: 'income',
       render: (income: number) => (
-        <span style={{ color: income > 0 ? '#05DF72' : '#99A1AF' }}>
-          {income > 0 ? `+${income.toFixed(2)}` : '-'} USDT
-        </span>
+        <div className={styles.income} style={{ color: income > 0 ? '#00C950' : '#4A5565' }}>
+          {income > 0 ? `+$${income.toFixed(2)}` : '-'}
+        </div>
       ),
     },
     {
@@ -93,9 +82,9 @@ const Expense: React.FC = () => {
       dataIndex: 'expense',
       key: 'expense',
       render: (expense: number) => (
-        <span style={{ color: expense > 0 ? '#FF6467' : '#99A1AF' }}>
-          {expense > 0 ? `-${expense.toFixed(2)}` : '-'} USDT
-        </span>
+        <div className={styles.expense} style={{ color: expense > 0 ? '#AA0F0A' : '#4A5565' }}>
+          {expense > 0 ? `-$${expense.toFixed(2)}` : '-'}
+        </div>
       ),
     },
   ];
@@ -107,57 +96,26 @@ const Expense: React.FC = () => {
     return allRecords.slice(start, end);
   };
 
-  const handleBack = () => {
-    history.back();
-  };
-
   return (
-    <PageContainer
-      title="支出明细记录"
-      extra={<Button onClick={handleBack}>返回</Button>}
-    >
-      <div className={styles.container}>
-        {/* 统计信息 */}
-        <Card className={styles.summaryCard}>
-          <div className={styles.summaryRow}>
-            <div className={styles.summaryItem}>
-              <div className={styles.summaryLabel}>总收入</div>
-              <div className={styles.summaryValue} style={{ color: '#05DF72' }}>
-                +{totalIncome.toFixed(2)} USDT
-              </div>
-            </div>
-            <div className={styles.summaryItem}>
-              <div className={styles.summaryLabel}>总支出</div>
-              <div className={styles.summaryValue} style={{ color: '#FF6467' }}>
-                -{totalExpense.toFixed(2)} USDT
-              </div>
-            </div>
-            <div className={styles.summaryItem}>
-              <div className={styles.summaryLabel}>净收益</div>
-              <div className={styles.summaryValue} style={{ color: netAmount >= 0 ? '#05DF72' : '#FF6467' }}>
-                {netAmount >= 0 ? '+' : ''}{netAmount.toFixed(2)} USDT
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* 明细表格 */}
-        <Card className={styles.tableCard}>
-          <Table
-            columns={columns}
-            dataSource={getCurrentData()}
-            rowKey="id"
-            pagination={{
-              current: currentPage,
-              total: allRecords.length,
-              pageSize,
-              onChange: (page) => setCurrentPage(page),
-              showSizeChanger: false,
-            }}
-          />
-        </Card>
+    <div className={styles.container}>
+      <PageBack title={'返回首页平台'} />
+      <div className={styles.title}>明细记录</div>
+      {/* 明细表格 */}
+      <div className={styles.tableCard}>
+        <Table
+          columns={columns}
+          dataSource={getCurrentData()}
+          rowKey="id"
+          pagination={{
+            current: currentPage,
+            total: allRecords.length,
+            pageSize,
+            onChange: (page) => setCurrentPage(page),
+            showSizeChanger: false,
+          }}
+        />
       </div>
-    </PageContainer>
+    </div>
   );
 };
 
