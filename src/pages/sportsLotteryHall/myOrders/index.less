@@ -1,18 +1,15 @@
 .container {
-  padding: 24px;
-  background: #0D0D11;
-  min-height: 100vh;
-
-  :global {
-    .ant-pro-page-container {
-      background: #0D0D11;
-      
-      .ant-pro-page-container-children-content {
-        background: #0D0D11;
-      }
-    }
+  width: 67.5%;
+  margin: 0 auto;
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+  .title{
+    font-size: 30px;
+    line-height: 36px;
+    color: #FFFFFF;
+    margin-bottom: 20px;
   }
-
   .statsRow {
     margin-bottom: 24px;
   }
@@ -75,49 +72,106 @@
     }
   }
 
+  .cardList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .orderCard {
+    background: #1A1A24;
+    border: 1px solid #1E2939;
+    border-radius: 14px;
+    transition: all 0.3s;
+
+    &:hover {
+      border-color: #2A2A34;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    :global {
+      .ant-card-body {
+        background: #1A1A24;
+        padding: 20px;
+      }
+    }
+  }
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1E2939;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    flex: 1;
+  }
+
+  .cardContent {
+    .cardItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+
+      .label {
+        font-size: 14px;
+        color: #99A1AF;
+        margin-right: 8px;
+        min-width: 80px;
+      }
+
+      .value {
+        font-size: 14px;
+        color: #FFFFFF;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .paginationWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+
   :global {
-    .ant-table {
-      background: #12121A;
-      color: #FFFFFF;
-
-      .ant-table-thead > tr > th {
+    .ant-pagination {
+      .ant-pagination-item {
         background: #1A1A24;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr > td {
-        background: #12121A;
-        border-bottom: 1px solid #1E2939;
-        color: #FFFFFF;
-      }
-
-      .ant-table-tbody > tr:hover > td {
-        background: #1A1A24;
-      }
-
-      .ant-pagination {
-        .ant-pagination-item {
-          background: #1A1A24;
-          border-color: #1E2939;
-          
-          a {
-            color: #FFFFFF;
-          }
-
-          &.ant-pagination-item-active {
-            background: #AA0F0A;
-            border-color: #AA0F0A;
-          }
+        border-color: #1E2939;
+        
+        a {
+          color: #FFFFFF;
         }
 
-        .ant-pagination-prev,
-        .ant-pagination-next {
-          .ant-pagination-item-link {
-            background: #1A1A24;
-            border-color: #1E2939;
-            color: #FFFFFF;
-          }
+        &.ant-pagination-item-active {
+          background: #AA0F0A;
+          border-color: #AA0F0A;
+        }
+      }
+
+      .ant-pagination-prev,
+      .ant-pagination-next {
+        .ant-pagination-item-link {
+          background: #1A1A24;
+          border-color: #1E2939;
+          color: #FFFFFF;
+        }
+      }
+
+      .ant-pagination-jump-prev,
+      .ant-pagination-jump-next {
+        .ant-pagination-item-link {
+          background: #1A1A24;
+          border-color: #1E2939;
+          color: #FFFFFF;
         }
       }
     }
