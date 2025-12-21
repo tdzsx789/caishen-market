@@ -1,8 +1,11 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Card, Space, message, Input, InputNumber, Table, Tag, Radio } from 'antd';
+import { ArrowUpOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { history, useParams, useModel, useLocation } from '@umijs/max';
 import PageBack from '@/components/PageBack'
 import RuleModal from './components/RuleModal'
+import ConfirmBetModal from './components/ConfirmBetModal'
+import BetSuccessModal from './components/BetSuccessModal'
 import React, { useState } from 'react';
 import styles from './index.less';
 interface VoteOption {
@@ -41,7 +44,7 @@ interface VoteData {
 // 模拟获取详情数据（实际应该从接口获取）
 const getVoteDetail = (id: string): VoteData | null => {
   const voteId = parseInt(id);
-  const isTime = 0.5;
+  const isTime = 0.8;
   const status = isTime > 0.7 ? 'isEnd' : isTime > 0.5 ? 'isStart' : 'InProgress';
   
   const now = new Date();
@@ -104,6 +107,8 @@ const VoteDetail: React.FC = () => {
   const isLoggedIn = !!initialState?.currentUser;
   const voteData = id ? getVoteDetail(id) : null;
   const [showRuleModal, setShowRuleModal] = useState(true);
+  const [showConfirmBetModal, setShowConfirmBetModal] = useState(false);
+  const [showBetSuccessModal, setShowBetSuccessModal] = useState(false);
   // 记录每个选项的是/否的下注金额
   const [betAmounts, setBetAmounts] = useState<{
     option1: { yes: number; no: number };
@@ -143,7 +148,101 @@ const VoteDetail: React.FC = () => {
     }
     setCurrentBet({ option, choice, amount: 0 });
   };
-  
+
+  // 处理确认下注按钮点击
+  const handleConfirmBetClick = () => {
+    if (!currentBet.amount || currentBet.amount <= 0) {
+      message.warning('请输入有效的投注金额');
+      return;
+    }
+    if (!currentBet.option || !currentBet.choice) {
+      message.warning('请先选择投注选项');
+      return;
+    }
+    setShowConfirmBetModal(true);
+  };
+
+  // 处理确认下单
+  const handleConfirmOrder = () => {
+    if (!currentBet.option || !currentBet.choice || !currentBet.amount) {
+      return;
+    }
+    
+    // 这里应该调用实际的API来提交投注
+    // 模拟投注成功
+    const optionText = currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text;
+    const odds = currentBet.option === 'option1' ? voteData.option1.odds : voteData.option2.odds;
+    
+    // 更新投注金额记录
+    setBetAmounts(prev => ({
+      ...prev,
+      [currentBet.option!]: {
+        ...prev[currentBet.option!],
+        [currentBet.choice!]: prev[currentBet.option!][currentBet.choice!] + currentBet.amount
+      }
+    }));
+
+    // 添加投注记录
+    const newBetRecord: BetRecord = {
+      id: Date.now(),
+      option: optionText,
+      choice: currentBet.choice,
+      amount: currentBet.amount,
+      odds: odds,
+      time: new Date().toISOString(),
+      status: 'pending',
+    };
+    setUserBetRecords(prev => [...prev, newBetRecord]);
+
+    // 关闭确认弹窗，显示成功弹窗
+    setShowConfirmBetModal(false);
+    setShowBetSuccessModal(true);
+    setCurrentBet({ option: null, choice: null, amount: 0 });
+  };
+
+  // 处理返回修改
+  const handleCancelConfirm = () => {
+    setShowConfirmBetModal(false);
+  };
+
+  // 计算中奖金额
+  const calculateWinnings = (): number => {
+    if (!currentBet.amount || !currentBet.option) return 0;
+    const odds = currentBet.option === 'option1' ? parseFloat(voteData.option1.odds) : parseFloat(voteData.option2.odds);
+    return currentBet.amount * odds;
+  };
+
+  // 获取预测结果显示值
+  const getPredictionValue = (): string => {
+    // 这里可以根据实际需求返回预测结果的显示值
+    // 暂时返回一个示例值
+    return `¥ ${voteData.tradingVolume.toLocaleString()}`;
+  };
+
+  // 快速加注
+  const handleQuickAdd = (amount: number) => {
+    setCurrentBet({ ...currentBet, amount: (currentBet.amount || 0) + amount });
+  };
+
+  // 获取当前选项的价格（美分）
+  const getCurrentPrice = (choice: 'yes' | 'no'): number => {
+    if (!currentBet.option) return 0;
+    // 这里可以根据实际逻辑计算价格，暂时返回示例值
+    return choice === 'yes' ? 52.3 : 47.7;
+  };
+
+  // 计算平均价格
+  const getAveragePrice = (): number => {
+    // 这里可以根据实际逻辑计算平均价格，暂时返回示例值
+    return 0.3;
+  };
+
+  // 计算赔率显示
+  const getOddsDisplay = (): string => {
+    if (!currentBet.option) return '1:1.0';
+    const odds = currentBet.option === 'option1' ? parseFloat(voteData.option1.odds) : parseFloat(voteData.option2.odds);
+    return `1:${odds.toFixed(1)}`;
+  };
 
   const statusConfig = {
     InProgress: { text: '进行中', className: styles.statusInProgress },
@@ -192,20 +291,20 @@ const VoteDetail: React.FC = () => {
                 <div className={styles.tableTRItem1}>{voteData.option1.text}</div>
                 <div className={styles.tableTRItem2}>{voteData.option1.odds}</div>
                 <div className={`${styles.tableTRItem}`}>
-                  <div className={styles.yewBtn}>{betAmounts.option1.yes}¢</div>
+                  <div className={styles.yewBtn} onClick={() => handleBetClick('option1', 'yes')}>{betAmounts.option1.yes}¢</div>
                 </div>
                 <div className={styles.tableTRItem}>
-                  <div className={styles.noBtn}>{betAmounts.option1.no}¢</div>
+                  <div className={styles.noBtn} onClick={() => handleBetClick('option1', 'no')}>{betAmounts.option1.no}¢</div>
                 </div>
               </div>
               <div className={styles.tableTR}>
                 <div className={styles.tableTRItem1}>{voteData.option2.text}</div>
                 <div className={styles.tableTRItem2}>{voteData.option2.odds}</div>
                 <div className={`${styles.tableTRItem}`}>
-                  <div className={styles.yewBtn}>{betAmounts.option2.yes}¢</div>
+                  <div className={styles.yewBtn} onClick={() => handleBetClick('option2', 'yes')}>{betAmounts.option2.yes}¢</div>
                 </div>
                 <div className={styles.tableTRItem}>
-                  <div className={styles.noBtn}>{betAmounts.option2.no}¢</div>
+                  <div className={styles.noBtn} onClick={() => handleBetClick('option2', 'no')}>{betAmounts.option2.no}¢</div>
                 </div>
               </div>
             </Card>
@@ -252,38 +351,92 @@ const VoteDetail: React.FC = () => {
         <div className={styles.bettingStatusCard}>
           {voteData.status !== 'isEnd' ?<Card className={`${styles.CardBg} ${styles.bettingResult}`}>
             <div className={styles.amountSection}>
-              <div className={styles.amountTitle}>
-                为 {currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text} - {currentBet.choice === 'yes' ? '是' : '否'} 下注
+              <div className={styles.betTitle}>请投注</div>
+              
+              {/* 当前投注统计 */}
+              <div className={styles.currentBetStats}>
+                <ArrowUpOutlined className={styles.statsArrow} />
+                <span className={styles.statsValue}>900,000</span>
               </div>
-              <InputNumber
-                className={styles.amountInput}
-                min={0.01}
-                precision={2}
-                value={currentBet.amount}
-                onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
-                placeholder="请输入下注金额"
-              />
-              <div className={styles.amountInfo}>
-                预计收益：{currentBet.amount > 0 ? (currentBet.amount * parseFloat(currentBet.option === 'option1' ? voteData.option1.odds : voteData.option2.odds)).toFixed(2) : '0.00'} USDT
+
+              {/* 选择是/否按钮 */}
+              {currentBet.option ? (
+                <div className={styles.choiceButtons}>
+                  <div
+                    className={`${styles.choiceButton} ${currentBet.choice === 'yes' ? styles.choiceButtonActive : ''}`}
+                    onClick={() => setCurrentBet({ ...currentBet, choice: 'yes' })}
+                  >
+                    <span className={styles.choiceText}>是</span>
+                    <span className={styles.choicePrice}>{getCurrentPrice('yes')}¢</span>
+                  </div>
+                  <div
+                    className={`${styles.choiceButton} ${currentBet.choice === 'no' ? styles.choiceButtonActive : ''}`}
+                    onClick={() => setCurrentBet({ ...currentBet, choice: 'no' })}
+                  >
+                    <span className={styles.choiceText}>否</span>
+                    <span className={`${styles.choicePrice} ${styles.choicePriceNo}`}>{getCurrentPrice('no')}¢</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.choicePlaceholder}>
+                  请先选择左侧表格中的投注选项
+                </div>
+              )}
+
+              {/* 投注金额 */}
+              <div className={styles.betAmountSection}>
+                <div className={styles.betAmountLabel}>投注金额</div>
+                <div className={styles.amountInputWrapper}>
+                  <span className={styles.amountPrefix}>$</span>
+                  <InputNumber
+                    className={styles.amountInput}
+                    min={0.01}
+                    precision={2}
+                    value={currentBet.amount}
+                    onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
+                    placeholder="请输入下注金额"
+                  />
+                </div>
+                {/* 快速加注按钮 */}
+                <div className={styles.quickAddButtons}>
+                  <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(10)}>+ 10</button>
+                  <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(50)}>+ 50</button>
+                  <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(100)}>+ 100</button>
+                  <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(500)}>+ 500</button>
+                </div>
               </div>
-              <div className={styles.betActions}>
-                {/* <Button
-                  type="primary"
-                  size="large"
-                  className={styles.confirmButton}
-                  onClick={handleConfirmBet}
-                  disabled={!currentBet.amount || currentBet.amount <= 0}
-                >
-                  确认下注
-                </Button>
-                <Button
-                  size="large"
-                  className={styles.cancelButton}
-                  onClick={handleCancelBet}
-                >
-                  取消
-                </Button> */}
+
+              {/* 收益信息 */}
+              <div className={styles.winningsSection}>
+                <div className={styles.winningsLabel}>赢</div>
+                <div className={styles.winningsContent}>
+                  <div className={styles.winningsAmount}>
+                    ${currentBet.amount > 0 ? calculateWinnings().toLocaleString() : '0'}
+                  </div>
+                  <div className={styles.oddsDisplay}>{getOddsDisplay()}</div>
+                </div>
+                <div className={styles.averagePrice}>
+                  平均价格 {getAveragePrice()} 美分 <span className={styles.infoIcon}>①</span>
+                </div>
               </div>
+
+              {/* 警告提示 */}
+              <div className={styles.warningBox}>
+                <ExclamationCircleOutlined className={styles.warningIcon} />
+                <div className={styles.warningText}>
+                  请投注前请仔细阅读《平台条款与规则》投注即表示您已同意相关条款。
+                </div>
+              </div>
+
+              {/* 确认按钮 */}
+              <Button
+                type="primary"
+                size="large"
+                className={styles.confirmBetButton}
+                onClick={handleConfirmBetClick}
+              >
+                确认投注
+              </Button>
             </div>
           </Card> : (
             <Card className={`${styles.CardBg} ${styles.bettingResult}`}>
@@ -369,6 +522,24 @@ const VoteDetail: React.FC = () => {
         </div>
       </div>
       <RuleModal open={showRuleModal} onClose={() => setShowRuleModal(false)} />
+      {currentBet.option && currentBet.choice && (
+        <ConfirmBetModal
+          open={showConfirmBetModal}
+          onClose={() => setShowConfirmBetModal(false)}
+          onConfirm={handleConfirmOrder}
+          onCancel={handleCancelConfirm}
+          betAmount={currentBet.amount}
+          predictionResult={{
+            value: getPredictionValue(),
+            choice: currentBet.choice,
+          }}
+          winnings={calculateWinnings()}
+        />
+      )}
+      <BetSuccessModal
+        open={showBetSuccessModal}
+        onClose={() => setShowBetSuccessModal(false)}
+      />
     </div>
   );
 };

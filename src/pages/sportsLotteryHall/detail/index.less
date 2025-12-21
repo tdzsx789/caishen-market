@@ -39,11 +39,9 @@
         }
       }
     }
-    :global {
-      .ant-card-body {
-        padding: 25px;
-        background: #12121A;
-      }
+    :global(.ant-card-body) {
+      padding: 25px;
+      background: #12121A;
     }
   }
 
@@ -148,6 +146,11 @@
           width: max-content;
           color: #FFFFFF;
           background-color: #00A63E;
+          cursor: pointer;
+          transition: opacity 0.3s;
+          &:hover {
+            opacity: 0.8;
+          }
         }
         .noBtn{
           padding: 8px 16px;
@@ -158,60 +161,291 @@
           color: #FB2C36;
           background-color: #AA0F0A33;
           border: 1px solid #AA0F0A66;
+          cursor: pointer;
+          transition: opacity 0.3s;
+          &:hover {
+            opacity: 0.8;
+          }
         }
       }
     }
   }
 
   .amountSection {
-    padding: 20px;
+    padding: 24px;
     background: #1A1A24;
     border-radius: 10px;
     border: 1px solid #1E2939;
 
-    .amountTitle {
+    .betTitle {
       color: #FFFFFF;
-      font-size: 16px;
+      font-size: 20px;
+      font-weight: 600;
       margin-bottom: 16px;
-      font-weight: 500;
+      text-align: left;
     }
 
-    .amountInput {
-      width: 100%;
-      margin-bottom: 12px;
+    // 当前投注统计
+    .currentBetStats {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      .statsArrow {
+        color: #FFFFFF;
+        font-size: 18px;
+      }
+      .statsValue {
+        color: #FFFFFF;
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
 
-      :global {
-        .ant-input-number {
-          width: 100%;
-          background: #12121A;
-          border-color: #1E2939;
+    // 选择是/否按钮
+    .choiceButtons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .choicePlaceholder {
+      padding: 16px;
+      text-align: center;
+      color: #99A1AF;
+      font-size: 14px;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+    }
+
+    .choiceButton {
+      flex: 1;
+      padding: 16px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+
+      .choiceText {
+        color: #FFFFFF;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .choicePrice {
+        color: #FFFFFF;
+        font-size: 14px;
+      }
+
+      .choicePriceNo {
+        color: #FB2C36;
+      }
+
+      &.choiceButtonActive {
+        background: #00C950;
+        border: 2px solid #51A2FF;
+        
+        .choiceText {
           color: #FFFFFF;
+        }
+        .choicePrice {
+          color: #FFFFFF;
+          font-size: 12px;
+        }
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    // 投注金额区域
+    .betAmountSection {
+      margin-bottom: 24px;
+
+      .betAmountLabel {
+        color: #FFFFFF;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .amountInputWrapper {
+        position: relative;
+        margin-bottom: 12px;
+
+        .amountPrefix {
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #FFFFFF;
+          font-size: 16px;
+          z-index: 1;
+          pointer-events: none;
+        }
+
+        .amountInput {
+          width: 100%;
+
+          :global(.ant-input-number) {
+            width: 100%;
+            background: #12121A;
+            border-color: #1E2939;
+            color: #FFFFFF;
+            border-radius: 8px;
+            height: 48px;
+            padding-left: 32px;
+          }
+          :global(.ant-input-number-input) {
+            color: #FFFFFF;
+            height: 48px;
+          }
+        }
+      }
+
+      // 快速加注按钮
+      .quickAddButtons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .quickAddBtn {
+        flex: 1;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #FFFFFF;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        &:active {
+          background: rgba(255, 255, 255, 0.15);
         }
       }
     }
 
-    .amountInfo {
-      color: #99A1AF;
-      font-size: 14px;
-      margin-bottom: 16px;
+    // 收益信息区域
+    .winningsSection {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+
+      .winningsLabel {
+        color: #FFFFFF;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .winningsContent {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .winningsAmount {
+          color: #00C950;
+          font-size: 32px;
+          font-weight: 600;
+          line-height: 1;
+        }
+
+        .oddsDisplay {
+          color: #FFFFFF;
+          font-size: 14px;
+        }
+      }
+
+      .averagePrice {
+        color: #99A1AF;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .infoIcon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.1);
+          color: #FFFFFF;
+          font-size: 10px;
+          cursor: pointer;
+        }
+      }
     }
 
-    .betActions {
+    // 警告提示框
+    .warningBox {
       display: flex;
+      align-items: flex-start;
       gap: 12px;
+      padding: 16px;
+      background: #FFF8E1;
+      border: 1px solid #FF9800;
+      border-radius: 8px;
+      margin-bottom: 24px;
+
+      .warningIcon {
+        color: #FF9800;
+        font-size: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .warningText {
+        color: #333333;
+        font-size: 12px;
+        line-height: 18px;
+        flex: 1;
+      }
     }
 
-    .confirmButton {
-      flex: 1;
+    // 确认投注按钮
+    .confirmBetButton {
+      width: 100%;
       height: 48px;
+      background: #FB2C36;
+      border: none;
+      border-radius: 8px;
+      color: #FFFFFF;
       font-size: 16px;
-      font-weight: 500;
-    }
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
 
-    .cancelButton {
-      flex: 1;
-      height: 48px;
-      font-size: 16px;
+      &:hover {
+        background: #e0242d;
+      }
+
+      &:active {
+        background: #c51e26;
+      }
+
+      :global(.ant-btn-primary) {
+        background: #FB2C36;
+        border-color: #FB2C36;
+
+        &:hover {
+          background: #e0242d;
+          border-color: #e0242d;
+        }
+      }
     }
   }
   .resultSection {

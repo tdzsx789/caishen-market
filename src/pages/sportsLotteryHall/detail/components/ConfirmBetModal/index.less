@@ -1,0 +1,185 @@
+.confirmBetModal {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+
+  :global(.ant-modal-content) {
+    padding: 0;
+    border-radius: 12px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+
+  :global(.ant-modal-mask) {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.modalContent {
+  position: relative;
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+// 关闭按钮
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  :global(.anticon) {
+    color: #ffffff;
+    font-size: 16px;
+  }
+}
+
+// 标题
+.title {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  color: #ffffff;
+  text-align: left;
+  margin-bottom: 24px;
+  padding-top: 8px;
+}
+
+// 确认文本
+.confirmText {
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.highlightAmount {
+  color: #FB2C36;
+  font-weight: 600;
+}
+
+// 信息区域
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.infoLabel {
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+}
+
+.infoValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+}
+
+.greenArrow {
+  color: #00C950;
+  font-size: 16px;
+}
+
+.predictionValue {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.choiceBadge {
+  padding: 4px 12px;
+  background: #00C950;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.winningsValue {
+  color: #00C950;
+  font-weight: 600;
+}
+
+// 底部按钮区域
+.footer {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.cancelButton {
+  flex: 1;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.confirmButton {
+  flex: 1;
+  height: 48px;
+  background: #FB2C36;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: #e0242d;
+  }
+
+  &:active {
+    background: #c51e26;
+  }
+}
