@@ -4,14 +4,17 @@
   font-family: PingFang SC;
   font-weight: 400;
   font-style: Regular;
-  
-  .statusCard {
-    max-width: 856px;
-    margin: 0 auto 16px;
+  .detailCard{
+    display: flex;
+  }
+  .CardBg{
     background: #12121A;
     border: 1px solid #1E2939;
     border-radius: 14px;
-
+  }
+  .statusCard {
+    width: 856px;
+    margin: 0 auto 16px;
     .description{
       font-size: 24px;
       line-height: 32px;
@@ -261,6 +264,13 @@
         font-size: 14px;
         line-height: 20px;
         color: #99A1AF;
+        display: flex;
+        align-items: center;
+        img{
+          width: 16px;
+          height: 16px;
+          margin-left: 4px;
+        }
       }
     }
     .betSectionGroup{
@@ -303,6 +313,171 @@
     padding: 40px 20px;
     color: #99A1AF;
     font-size: 14px;
+  }
+  .bettingStatusCard{
+    margin-left: 24px;
+    width: 416px;
+    .bettingResult{
+      .bettingResultLabel{
+        font-size: 14px;
+        line-height:       20px;
+        text-align: center;
+        color: #99A1AF;
+        padding-bottom: 17px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #1E2939;
+        .label{
+          font-size: 20px;
+          line-height: 28px;
+          color: #fff;
+          margin-bottom: 8px;
+        }
+      }
+      .resultSection{
+        padding: 22px;
+        border-radius: 14px;
+        .resultSectionItem{
+          display: flex;
+          padding-bottom: 16px;
+          justify-content: space-between;
+          align-items: center;
+          .left{
+            display: flex;
+            align-items: center;
+          }
+          .icon{
+            width: 48px;
+            height: 48px;
+            margin-right: 12px;
+          }
+          .options{
+            font-size: 14px;
+            line-height: 20px;
+            text-align: left;
+            color: #05DF72;
+            .label{
+              display: flex;
+              align-items: center;
+              font-size: 18px;
+              line-height: 28px;
+              color: #FFFFFF;
+              img{
+                width: 18px;
+                height: 18px;
+              }
+            }
+          }
+          .probability{
+            font-size: 12px;
+            line-height: 16px;
+            text-align: right;
+            color: #99A1AF;
+
+            .num{
+              font-size: 24px;
+              line-height: 32px;
+              text-align: right;
+            }
+          }
+        }
+        .bettingDetails{
+          display: flex;;
+          justify-content: space-between;
+          align-items: center;
+          .bettingDetailsItem{
+            width: 99px;
+            text-align: center;
+            .label{
+              font-size: 14px;
+              line-height: 20px;
+              color: #05DF72;
+            }
+            .text{
+              font-size: 12px;
+              line-height: 16px;
+              color: #99A1AF;
+            }
+          }
+        }
+      }
+      .resultSectionIsWin{
+        background: linear-gradient(90deg, rgba(0, 201, 80, 0.1) 0%, rgba(0, 166, 62, 0.05) 100%);
+        border: 2px solid #00C95080;
+        .resultSectionItem{
+          border-bottom: 1px solid #00C95033;
+          .type{
+            font-size: 12px;
+            line-height: 16px;
+            color: #FFFFFF;
+            display: flex;
+            padding: 6px 8px;
+            border-radius: 40px;
+            background-color: #00C950;
+            align-items: center;
+            .icon{
+              width: 12px;
+              height: 12px;
+            }
+          }
+          .probability{
+            .num{
+              color: #00C950;
+            }
+          }
+        }
+      }
+      .resultSectionIsEnd{
+        margin-top: 12px;
+        opacity: 0.6;
+        background-color: #1A1A24;
+        border: 1px solid #364153;
+        .resultSectionItem{
+          border-bottom: 1px solid #00C95033;
+          .options{
+            color: #99A1AF;
+          }
+          .probability{
+            color: #6A7282;
+            .num{
+              color: #99A1AF;
+            }
+          }
+        }
+        .bettingDetails{
+          .bettingDetailsItem{
+            .label{
+              color: #99A1AF;
+            }
+            .text{
+              color: #6A7282;
+            }
+          }
+        }
+      }
+      .tip{
+        background: linear-gradient(90deg, rgba(170, 15, 10, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+        border: 1px solid #AA0F0A4D;
+        border-radius: 10px;
+        padding: 17px;
+        margin-top: 24px;
+        display: flex;
+        img{
+          width: 20px;
+          height: 20px;
+          margin-right: 12px;
+        }
+        .text{
+          font-size: 12px;
+          line-height: 16px;
+          color: #99A1AF;
+          .title{
+            font-size: 14px;
+            line-height: 20px;
+            color: #FFFFFF;
+          }
+        }
+      }
+    }
   }
 }
 @media (max-width: 480px) {
