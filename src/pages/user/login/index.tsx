@@ -12,10 +12,7 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import {
-  FormattedMessage,
-  Helmet,
-  SelectLang,
+import { FormattedMessage, Helmet, SelectLang,
   useIntl,
   useModel,
 } from '@umijs/max';

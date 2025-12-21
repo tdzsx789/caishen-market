@@ -263,6 +263,40 @@
         color: #99A1AF;
       }
     }
+    .betSectionGroup{
+      .betSectionItem{
+        display: flex;
+        padding: 14px 0;
+        margin-top: 12px;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #1E2939;
+        .label{
+          font-size: 14px;
+          line-height: 20px;
+          color: #FFFFFF;
+        }
+        .text{
+          font-size: 12px;
+          line-height: 16px;
+          color: #99A1AF;
+          margin-top: 4px;
+        }
+        .price{
+          font-size: 16px;
+          line-height: 24px;
+          text-align: right;
+          color: #FFFFFF;
+        }
+        .state{
+          text-align: right;
+          color: #AA0F0A;
+        }
+        &:nth-last-of-type(1){
+          border-bottom: none !important;
+        }
+      }
+    }
   }
   .emptyRecords {
     text-align: center;

@@ -1,6 +1,7 @@
 .container {
   background: #0D0D11;
   width: 100vw;
+  min-width: 1296px;
   font-family: PingFang SC;
   .content {
     margin-top: 24px;
@@ -13,7 +14,7 @@
       gap: 16px;
       margin-bottom: 24px;
 
-      @media (max-width: 1200px) {
+      @media (max-width: 1296px) {
         grid-template-columns: repeat(3, 1fr);
       }
 
@@ -72,6 +73,7 @@
   }
   .tabCard{
     width: 100vw;
+    min-width: 1296px;
     background-color: #12121A;
     border-top: 1px solid #1E2939;
     padding: 13px 0;
@@ -122,6 +124,9 @@
 }
 
 @media (max-width: 480px) {
+  .container,.tabCard{
+    min-width: 100vw !important;
+  }
   .content,.tabGroup,.title{
     width: 90vw !important;
   }

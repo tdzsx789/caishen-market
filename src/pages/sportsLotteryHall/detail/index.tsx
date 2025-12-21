@@ -282,6 +282,28 @@ const VoteDetail: React.FC = () => {
           个人投注记录
           <div className={styles.viewMore} onClick={handleGoToOrders}>查看更多</div>
         </div>
+        <div className={styles.betSectionGroup}>
+          <div className={styles.betSectionItem}>
+            <div>
+              <div className={styles.label}>以 0.44 价格投注了$15.25    900,000“是”</div>
+              <div className={styles.text}>2024-01-15 14:30:00</div>
+            </div>
+            <div>
+              <div className={styles.price}>$0.03</div>
+              <div className={`${styles.text} ${styles.state}`}>待开奖</div>
+            </div>
+          </div>
+          <div className={styles.betSectionItem}>
+            <div>
+              <div className={styles.label}>以 0.44 价格投注了$15.25    900,000“是”</div>
+              <div className={styles.text}>2024-01-15 14:30:00</div>
+            </div>
+            <div>
+              <div className={styles.price}>$0.03</div>
+              <div className={`${styles.text} ${styles.state}`}>待开奖</div>
+            </div>
+          </div>
+        </div>
       </Card>}
     </div>
   );
