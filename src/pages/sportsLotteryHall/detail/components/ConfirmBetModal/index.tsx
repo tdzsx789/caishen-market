@@ -31,7 +31,7 @@ const ConfirmBetModal: React.FC<ConfirmBetModalProps> = ({
       onCancel={onClose}
       footer={null}
       closable={false}
-      width={600}
+      width={448}
       className={styles.confirmBetModal}
       maskClosable={false}
     >
@@ -62,12 +62,12 @@ const ConfirmBetModal: React.FC<ConfirmBetModalProps> = ({
           </div>
         </div>
         <div className={styles.footer}>
-          <button className={styles.cancelButton} onClick={onCancel}>
+          <div className={styles.cancelButton} onClick={onCancel}>
             返回修改
-          </button>
-          <button className={styles.confirmButton} onClick={onConfirm}>
+          </div>
+          <div className={styles.confirmButton} onClick={onConfirm}>
             确认下单
-          </button>
+          </div>
         </div>
       </div>
     </Modal>

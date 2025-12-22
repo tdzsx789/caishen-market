@@ -44,7 +44,7 @@ interface VoteData {
 // 模拟获取详情数据（实际应该从接口获取）
 const getVoteDetail = (id: string): VoteData | null => {
   const voteId = parseInt(id);
-  const isTime = 0.8;
+  const isTime = 0.4;
   const status = isTime > 0.7 ? 'isEnd' : isTime > 0.5 ? 'isStart' : 'InProgress';
   
   const now = new Date();
@@ -106,7 +106,7 @@ const VoteDetail: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const isLoggedIn = !!initialState?.currentUser;
   const voteData = id ? getVoteDetail(id) : null;
-  const [showRuleModal, setShowRuleModal] = useState(true);
+  const [showRuleModal, setShowRuleModal] = useState(false);
   const [showConfirmBetModal, setShowConfirmBetModal] = useState(false);
   const [showBetSuccessModal, setShowBetSuccessModal] = useState(false);
   // 记录每个选项的是/否的下注金额
@@ -355,7 +355,7 @@ const VoteDetail: React.FC = () => {
               
               {/* 当前投注统计 */}
               <div className={styles.currentBetStats}>
-                <ArrowUpOutlined className={styles.statsArrow} />
+                <img className={styles.statsArrow} src="/icons/Icon10.png" alt="" />
                 <span className={styles.statsValue}>900,000</span>
               </div>
 
@@ -370,7 +370,7 @@ const VoteDetail: React.FC = () => {
                     <span className={styles.choicePrice}>{getCurrentPrice('yes')}¢</span>
                   </div>
                   <div
-                    className={`${styles.choiceButton} ${currentBet.choice === 'no' ? styles.choiceButtonActive : ''}`}
+                    className={`${styles.choiceButton} ${currentBet.choice === 'no' ? styles.choiceButtonNoActive : ''}`}
                     onClick={() => setCurrentBet({ ...currentBet, choice: 'no' })}
                   >
                     <span className={styles.choiceText}>否</span>
@@ -382,12 +382,9 @@ const VoteDetail: React.FC = () => {
                   请先选择左侧表格中的投注选项
                 </div>
               )}
-
-              {/* 投注金额 */}
               <div className={styles.betAmountSection}>
                 <div className={styles.betAmountLabel}>投注金额</div>
                 <div className={styles.amountInputWrapper}>
-                  <span className={styles.amountPrefix}>$</span>
                   <InputNumber
                     className={styles.amountInput}
                     min={0.01}
@@ -408,15 +405,15 @@ const VoteDetail: React.FC = () => {
 
               {/* 收益信息 */}
               <div className={styles.winningsSection}>
-                <div className={styles.winningsLabel}>赢</div>
-                <div className={styles.winningsContent}>
-                  <div className={styles.winningsAmount}>
-                    ${currentBet.amount > 0 ? calculateWinnings().toLocaleString() : '0'}
-                  </div>
+                <div className={styles.winningsLabel}>
+                  赢
                   <div className={styles.oddsDisplay}>{getOddsDisplay()}</div>
                 </div>
+                <div className={styles.winningsAmount}>
+                  ${currentBet.amount > 0 ? calculateWinnings().toLocaleString() : '0'}
+                </div>
                 <div className={styles.averagePrice}>
-                  平均价格 {getAveragePrice()} 美分 <span className={styles.infoIcon}>①</span>
+                  平均价格 {getAveragePrice()} 美分 <img src='/icons/Icon13.png' alt=''/>
                 </div>
               </div>
 
@@ -424,7 +421,7 @@ const VoteDetail: React.FC = () => {
               <div className={styles.warningBox}>
                 <ExclamationCircleOutlined className={styles.warningIcon} />
                 <div className={styles.warningText}>
-                  请投注前请仔细阅读《平台条款与规则》投注即表示您已同意相关条款。
+                  请投注前请仔细阅读<span>《平台条款与规则》</span>投注即表示您已同意相关条款。
                 </div>
               </div>
 
