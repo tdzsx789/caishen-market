@@ -1,0 +1,26 @@
+name: Auto Deploy to Server
+on:
+  push:
+    branches: [ main ] # 指定在推送到main分支时触发
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Execute deploy script via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        port: ${{ secrets.SERVER_PORT }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          # 切换到你的1Panel网站根目录，例如：
+          cd /opt/1panel/www/sites/caishen-market
+          # 拉取最新代码
+          git pull origin main
+          # 3. 安装依赖（如果有变化）
+          npm install
+          # 4. 执行打包命令（根据你的项目配置，如NestJS是 npm run build）
+          npm run build
+          # 如果有需要，可以在这里添加重启服务的命令，例如：
+          docker compose restart
