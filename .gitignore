@@ -47,3 +47,5 @@ coverage/
 
 # 其他
 *.pem
+
+src/.umi-production
