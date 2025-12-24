@@ -35,6 +35,7 @@ export interface VoteData {
 // 投注记录
 export interface BetRecord {
   id: number;
+  betId?: number;  // 提交投注时返回的betId
   voteId: number;
   voteTitle?: string;
   option: string;
