@@ -1,10 +1,11 @@
 .container {
   background: #0D0D11;
   width: 100vw;
+  min-width: 1296px;
   font-family: PingFang SC;
   .content {
     margin-top: 24px;
-    width: 67.5%;
+    width: 1296px;
     margin: 0 auto;
 
     .cardList {
@@ -13,12 +14,8 @@
       gap: 16px;
       margin-bottom: 24px;
 
-      @media (max-width: 1200px) {
+      @media (max-width: 1296px) {
         grid-template-columns: repeat(3, 1fr);
-      }
-
-      @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
       }
 
       @media (max-width: 480px) {
@@ -76,6 +73,7 @@
   }
   .tabCard{
     width: 100vw;
+    min-width: 1296px;
     background-color: #12121A;
     border-top: 1px solid #1E2939;
     padding: 13px 0;
@@ -83,7 +81,7 @@
   }
   .tabGroup{
     display: flex;
-    width: 67.5%;
+    width: 1296px;
     flex-wrap: wrap;
     margin: 0 auto;
     gap: 40px;
@@ -114,10 +112,22 @@
     }
   }
   .title{
-    width: 67.5%;
+    width: 1296px;
     margin: 18px auto;
     font-weight: 400;
     font-size: 24px;
     line-height: 32px;
+  }
+}
+
+@media (max-width: 1200px) {
+}
+
+@media (max-width: 480px) {
+  .container,.tabCard{
+    min-width: 100vw !important;
+  }
+  .content,.tabGroup,.title{
+    width: 90vw !important;
   }
 }

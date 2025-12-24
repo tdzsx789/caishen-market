@@ -1,0 +1,161 @@
+.confirmBetModal {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+
+  :global(.ant-modal-content) {
+    padding: 0;
+    border-radius: 16px;
+    background: #12121A;
+    border: 1px solid #1E2939;
+    overflow: hidden;
+    box-shadow: 0px 25px 50px -12px #00000040;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+
+  :global(.ant-modal-mask) {
+    background-color: #000000CC;
+  }
+}
+
+.modalContent {
+  position: relative;
+  background: #12121A;
+  border-radius: 16px;
+  padding: 25px;
+}
+
+// 关闭按钮
+.closeButton {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  width: 24px;
+  height: 24px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+
+  :global(.anticon) {
+    color: #99A1AF;
+    font-size: 20px;
+  }
+}
+
+// 标题
+.title {
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  color: #FFFFFF;
+  margin-bottom: 24px;
+}
+
+// 确认文本
+.confirmText {
+  font-size: 18px;
+  line-height: 28px;
+  color: #D1D5DC;
+  text-align: center;
+  margin-bottom: 24px;
+  .highlightAmount {
+    color: #AA0F0A;
+  }
+}
+
+
+// 信息区域
+.infoSection {
+  margin-bottom: 24px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  background: #1A1A24;
+  border-radius: 14px;
+  border: 1px solid #1E2939;
+  .infoLabel {
+    font-size: 16px;
+    line-height: 24px;
+    color: #99A1AF;
+  }
+  
+  .infoValue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    line-height: 28px;
+    color: #ffffff;
+    .greenArrow {
+      color: #00C950;
+      font-size: 16px;
+    }
+    
+    .predictionValue {
+      font-size: 16px;
+      line-height: 24px;
+      color: #FFFFFF;
+    }
+    
+    .choiceBadge {
+      padding: 4px 12px;
+      background: #00A63E;
+      color: #ffffff;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+  }
+  .winningsValue {
+    color: #00C950;
+  }
+}
+// 底部按钮区域
+.footer {
+  display: flex;
+  gap: 12px;
+}
+
+.cancelButton {
+  flex: 1;
+  height: 50px;
+  background: #1A1A24;
+  border: 1px solid #364153;
+  color: #D1D5DC;
+  font-size: 16px;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover,&:active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.confirmButton {
+  flex: 1;
+  height: 50px;
+  background: #AA0F0A;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 50px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover,&:active {
+    background: #aa0f0add;
+  }
+}

@@ -1,0 +1,81 @@
+.betSuccessModal {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-style: Regular;
+
+  :global(.ant-modal-content) {
+    padding: 0;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #1A1A24 0%, #12121A 100%);
+    border: 2px solid #AA0F0A66;
+    box-shadow: 0px 25px 50px -12px #00000040;
+    overflow: hidden;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+
+  :global(.ant-modal-mask) {
+    background-color: #000000CC;
+  }
+}
+
+.modalContent {
+  position: relative;
+  background: url('/icons/bg.png') no-repeat;
+  background-size: 100% 100%;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .Caishen{
+    width: 292px;
+    height: 292px;
+  }
+  .successMessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -50px auto 12px;
+    .trophyIcon {
+      width: 32px;
+      height: 32px;
+      margin-right: 8px;
+    }
+    
+    .successText {
+      background: linear-gradient(90deg, #05DF72 0%, #00A63E 100%),
+linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+      -webkit-background-clip: text;  // 裁剪背景到文字区域
+      -webkit-text-fill-color: transparent;  // 设置文字填充为透明
+      background-clip: text;
+      font-weight: 600;
+      font-style: Semibold;
+      font-size: 30px;
+      line-height: 36px;
+    }
+  }
+  .hintText {
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    color: #D1D5DC;
+  }
+  
+  // 确认按钮
+  .confirmButton {
+    width: 176px;
+    height: 48px;
+    margin: 29px auto 50px;
+    box-shadow: 0px 4px 6px -4px #0000001A,0px 10px 15px -3px #0000001A;
+    background: linear-gradient(180deg, #AA0F0A 0%, #CC1510 100%);
+    color: #FFFFFF;
+    font-size: 16px;
+    line-height: 48px;
+    text-align: center;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+}

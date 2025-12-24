@@ -28,7 +28,7 @@ export default {
   test: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/': {
-      target: 'https://proapi.azurewebsites.net',
+      target: 'http://192.168.5.138:8000',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
