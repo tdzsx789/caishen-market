@@ -33,6 +33,10 @@ jobs:
             npm install
             # 确保构建环境干净，如果您的构建工具不会自动清理，可以增加删除dist目录的命令，例如：rm -rf dist
             npm run build
+            # 清空目标目录，这里也需要sudo
+            sudo rm -rf /opt/1panel/www/sites/caishen1/*
+            # 复制时使用sudo
+            sudo cp -r /opt/1panel/www/sites/caishen-market/dist/* /opt/1panel/www/sites/caishen1/
             # 请根据您的实际部署方式决定是否需要下面的命令，并谨慎使用：
             # docker compose restart
 
