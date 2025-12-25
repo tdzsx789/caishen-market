@@ -7,5 +7,6 @@
  */
 import Footer from './Footer';
 import { AvatarDropdown, AvatarName } from './RightContent/AvatarDropdown';
+import { BalanceDisplay } from './RightContent/BalanceDisplay';
 
-export { AvatarDropdown, AvatarName, Footer };
+export { AvatarDropdown, AvatarName, BalanceDisplay, Footer };

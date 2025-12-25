@@ -1,12 +1,12 @@
 import {
+  DollarOutlined,
   LogoutOutlined,
-  SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
-import { Spin } from 'antd';
-import { createStyles } from 'antd-style';
+import { Avatar, Spin } from 'antd';
+import styles from './index.less'
 import React from 'react';
 import { flushSync } from 'react-dom';
 import { outLogin } from '@/services/ant-design-pro/api';
@@ -22,24 +22,6 @@ export const AvatarName = () => {
   const { currentUser } = initialState || {};
   return <span className="anticon">{currentUser?.name}</span>;
 };
-
-const useStyles = createStyles(({ token }) => {
-  return {
-    action: {
-      display: 'flex',
-      height: '48px',
-      marginLeft: 'auto',
-      overflow: 'hidden',
-      alignItems: 'center',
-      padding: '0 8px',
-      cursor: 'pointer',
-      borderRadius: token.borderRadius,
-      '&:hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
-    },
-  };
-});
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
   menu,
@@ -65,7 +47,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
       });
     }
   };
-  const { styles } = useStyles();
 
   const { initialState, setInitialState } = useModel('@@initialState');
 
@@ -78,6 +59,10 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
       loginOut();
       return;
     }
+    if (key === 'myOrders') {
+      history.push('/SportsLotteryHall/myOrders');
+      return;
+    }
     history.push(`/account/${key}`);
   };
 
@@ -85,10 +70,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
     <span className={styles.action}>
       <Spin
         size="small"
-        style={{
-          marginLeft: 8,
-          marginRight: 8,
-        }}
+        className={styles.spinWrapper}
       />
     </span>
   );
@@ -99,34 +81,26 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser) {
     return loading;
   }
 
   const menuItems = [
-    ...(menu
-      ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: '个人中心',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: '个人设置',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
-      : []),
+    {
+      key: 'myOrders',
+      icon: <DollarOutlined />,
+      label: '我的投注订单',
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: '登出',
     },
   ];
+
+  // 获取用户名，如果昵称超过10个字符则截取前10个
+  const displayName = currentUser.name || currentUser.username || '用户';
+  const processedName = displayName.length > 10 ? displayName.substring(0, 10) : displayName;
 
   return (
     <HeaderDropdown
@@ -135,6 +109,23 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
         onClick: onMenuClick,
         items: menuItems,
       }}
+      overlayClassName={styles.dropdownOverlay}
+      dropdownRender={(menu) => (
+        <div className={styles.dropdownContent}>
+          <div className={styles.dropdownHeader}>
+            <Avatar
+              src={currentUser.avatar}
+              size={32}
+              icon={<UserOutlined />}
+            />
+            <div className={styles.userInfo}>
+              <div className={styles.userName}>{processedName}</div>
+              <div className={styles.userRole}>用户</div>
+            </div>
+          </div>
+          {menu}
+        </div>
+      )}
     >
       {children}
     </HeaderDropdown>

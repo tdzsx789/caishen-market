@@ -4,8 +4,10 @@
 declare namespace API {
   type CurrentUser = {
     name?: string;
+    username?: string;
     avatar?: string;
     userid?: string;
+    id?: number;
     email?: string;
     signature?: string;
     title?: string;
@@ -15,6 +17,7 @@ declare namespace API {
     unreadCount?: number;
     country?: string;
     access?: string;
+    balance?: number; // 账户余额/积分
     geographic?: {
       province?: { label?: string; key?: string };
       city?: { label?: string; key?: string };
