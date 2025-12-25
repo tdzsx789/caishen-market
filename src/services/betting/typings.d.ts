@@ -85,7 +85,7 @@ export interface PaginatedResponse<T> {
 
 // 获取投票列表请求参数
 export interface GetVoteListParams {
-  category?: 'all' | 'Bitcoin' | 'Ethereum' | 'Solana' | 'XRP';
+  category?: 'all' | 'Bitcoin' | 'Ethereum' | 'Caishen' | 'TBC';
   page?: number;
   pageSize?: number;
   status?: 'InProgress' | 'isStart' | 'isEnd';

@@ -1,8 +1,8 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
-import React from 'react';
+import { history, Link, useModel } from '@umijs/max';
+import React, { useEffect } from 'react';
 import {
   AvatarDropdown,
   AvatarName,
@@ -99,25 +99,54 @@ export async function getInitialState(): Promise<{
     };
   }
 
-  // 如果不是登录页面，执行
-  const { location } = history;
-  if (
-    ![loginPath, '/user/register', '/user/register-result'].includes(
-      location.pathname,
-    )
-  ) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: defaultSettings as Partial<LayoutSettings>,
-    };
-  }
   return {
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
+
+const AppInitWrapper = (props: { children: React.ReactNode }) => {
+  const { initialState, setInitialState } = useModel('@@initialState');
+  useEffect(() => {
+    const init = async () => {
+      if (initialState?.currentUser) return;
+
+      // 尝试从 localStorage 恢复模拟用户
+      const mockUserStr = localStorage.getItem('mock_user');
+      if (mockUserStr) {
+        try {
+          const mockUser = JSON.parse(mockUserStr);
+          if (mockUser) {
+             setInitialState((s) => ({
+               ...s,
+               currentUser: mockUser,
+             }));
+             // 如果是模拟用户，可能不需要再去 fetch 真实接口，或者 fetch 失败也不影响
+          }
+        } catch (e) {
+          console.error('Failed to parse mock user', e);
+        }
+      }
+
+      if (initialState?.fetchUserInfo) {
+        try {
+          const currentUser = await initialState.fetchUserInfo();
+          if (currentUser) {
+            setInitialState((s) => ({
+              ...s,
+              currentUser,
+            }));
+            // 如果真实接口获取成功，清除模拟数据（可选，视需求而定，这里保留以防刷新又没了）
+          }
+        } catch (error) {
+          // ignore
+        }
+      }
+    };
+    init();
+  }, []);
+  return <>{props.children}</>;
+};
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({
@@ -162,9 +191,9 @@ export const layout: RunTimeLayoutConfig = ({
     menuRender: false, // 隐藏菜单栏
     childrenRender: (children) => {
       return (
-        <>
+        <AppInitWrapper>
           {children}
-        </>
+        </AppInitWrapper>
       );
     },
     ...initialState?.settings,

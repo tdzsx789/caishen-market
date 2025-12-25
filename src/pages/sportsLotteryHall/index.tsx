@@ -5,40 +5,55 @@ import VoteCard from './components/VoteCard';
 import styles from './index.less';
 
 // 模拟投票数据
-const generateVoteData = (count: number) => {
+const generateCoinData = (coinName: string) => {
   const now = new Date();
-  return Array.from({ length: count }, (_, index) => {
-    // 随机生成状态：进行中或已结束
-    const isTime = Math.random();
-    const status = isTime > 0.7 ? 'isEnd' :isTime > 0.5 ? 'isStart' : 'InProgress';
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  // 生成当天24小时的数据
+  return Array.from({ length: 24 }, (_, index) => {
+    // 设置结束时间为当天的整点（0:00 - 23:00）的下一个小时
+    // 例如 index=0 (0点场)，endTime应该是 1:00
+    const endTime = new Date(todayStart.getTime() + (index + 1) * 60 * 60 * 1000);
     
-    // 生成结束时间（如果是已结束，时间在过去；如果是进行中，时间在未来）
-    const endTime = isTime > 0.7  
-      ? new Date(now.getTime() -isTime * 7 * 24 * 60 * 60 * 1000) // 过去7天内
-      : new Date(now.getTime() +isTime * 7 * 24 * 60 * 60 * 1000); // 未来7天内
+    // 状态判断：
+    // 基于当前小时段(index)判断
+    // 如果 index < 当前小时，为已结束
+    // 如果 index == 当前小时，为进行中
+    // 如果 index > 当前小时，为即将开始
+    let status: 'InProgress' | 'isStart' | 'isEnd';
+    const currentHour = now.getHours();
     
-    // 生成创建时间（用于排序）
-    const createdAt = new Date(now.getTime() - (count - index) * 24 * 60 * 60 * 1000);
+    if (index < currentHour) {
+      status = 'isEnd';
+    } else if (index === currentHour) {
+      status = 'InProgress';
+    } else {
+      status = 'isStart';
+    }
+    
+    // 格式化时间用于描述
+    const timeStr = `${endTime.getFullYear()}-${String(endTime.getMonth() + 1).padStart(2, '0')}-${String(endTime.getDate()).padStart(2, '0')} ${String(endTime.getHours()).padStart(2, '0')}:00`;
     
     // 随机生成交易量（单位：USDT）
-    const tradingVolume = (isTime * 1000000 + 10000).toFixed(2);
+    const tradingVolume = (Math.random() * 1000000 + 10000).toFixed(2);
+    
     return {
-      id: index + 1,
-      title: `投票项目 ${index + 1}`,
-      description: `这是第 ${index + 1} 个投票项目的详细描述信息`,
-      activityDescription: `活动说明：这是一个关于加密货币市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在截止日期前结束，结果将在活动结束后公布。`,
-      tradingVolume: parseFloat(tradingVolume), // 交易量
-      endTime: endTime.toISOString(), // 结束时间
-      createdAt: createdAt.toISOString(), // 创建时间
-      status: status as 'InProgress' | 'isStart' | 'isEnd', // 状态
-      userBetStatus: isTime > 0.5, // 用户投注状态
+      id: `${coinName}-${index}`, // 唯一ID
+      title: `${coinName} 价格预测 ${String(index).padStart(2, '0')}:00`,
+      description: `${coinName}价格会在${timeStr}之前到达120000美元吗？`,
+      activityDescription: `活动说明：这是一个关于${coinName}市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在${timeStr}结束，结果将在活动结束后公布。`,
+      tradingVolume: parseFloat(tradingVolume),
+      endTime: endTime.toISOString(),
+      createdAt: now.toISOString(), // 创建时间是现在
+      status: status as 'InProgress' | 'isStart' | 'isEnd',
+      userBetStatus: Math.random() > 0.8, // 随机用户投注状态
       option1: {
-        text: `选项A - ${index + 1}`,
-        odds: '1.85',
+        text: '是',
+        odds: (1.5 + Math.random()).toFixed(2),
       },
       option2: {
-        text: `选项B - ${index + 1}`,
-        odds: '1.95',
+        text: '否',
+        odds: (1.5 + Math.random()).toFixed(2),
       },
       result: status === 'isEnd' ? {
         option1: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
@@ -53,8 +68,8 @@ const tabLabel=()=>{
     all: '/icons/pajamas_earth.svg',
     Bitcoin: '/icons/formkit_bitcoin.svg',
     Ethereum: '/icons/picon_ethereum.svg',
-    Solana: '/icons/token_solana.svg',
-    XRP: '/icons/Vector.svg',
+    Caishen: '/icons/token_solana.svg',
+    TBC: '/icons/Vector.svg',
   }
   const options = Object.keys(list).map((item,index) => {
     return {
@@ -77,17 +92,27 @@ const SportsLotteryHall: React.FC = () => {
     '5': 1,
   });
   const [options, setOptions] = useState(tabLabel())
-  // 每个tab的数据（这里用模拟数据，实际应该从接口获取）
+  
+  // 生成各币种数据
+  const bitcoinData = generateCoinData('Bitcoin');
+  const ethereumData = generateCoinData('Ethereum');
+  const caishenData = generateCoinData('Caishen');
+  const tbcData = generateCoinData('TBC');
+  
+  // 汇总所有数据
+  const allDataList = [...bitcoinData, ...ethereumData, ...caishenData, ...tbcData];
+
+  // 每个tab的数据
   const allVoteData = {
-    '1': generateVoteData(450), // 450个数据，3页
-    '2': generateVoteData(300), // 300个数据，2页
-    '3': generateVoteData(600), // 600个数据，4页
-    '4': generateVoteData(150), // 150个数据，1页
-    '5': generateVoteData(750), // 750个数据，5页
+    '1': allDataList, // 全部
+    '2': bitcoinData, // Bitcoin
+    '3': ethereumData, // Ethereum
+    '4': caishenData, // Caishen
+    '5': tbcData,     // TBC
   };
 
-  // 每页3个*50行 = 150个
-  const pageSize = 150;
+  // 每页数据量
+  const pageSize = 20; // 调整每页显示数量，因为数据量变少了（每组24个）
 
   // 排序函数：进行中 > 未开始 > 已结束；同状态下按创建时间降序
   const sortVoteData = (data: typeof allVoteData['1']) => {

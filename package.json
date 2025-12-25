@@ -39,8 +39,10 @@
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "antd": "^5.25.4",
     "antd-style": "^3.7.0",
+    "axios": "^1.13.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
+    "echarts": "^6.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
