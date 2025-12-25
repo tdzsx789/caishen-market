@@ -29,7 +29,12 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/1panel/www/sites/caishen-market
+            #删除本地所有更改
+            git fetch origin
+            git reset --hard origin/main
+            #拉取代码
             git pull origin main
+            #安装依赖
             npm install
             # 确保构建环境干净，如果您的构建工具不会自动清理，可以增加删除dist目录的命令，例如：rm -rf dist
             npm run build
