@@ -13,6 +13,8 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import '@ant-design/v5-patch-for-react-19';
 
+console.log('再次推送')
+
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
