@@ -1,6 +1,6 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Tabs, Pagination } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
 import styles from './index.less';
 
@@ -91,8 +91,8 @@ const SportsLotteryHall: React.FC = () => {
     '4': 1,
     '5': 1,
   });
-  const [options, setOptions] = useState(tabLabel())
-  
+  const [options, setOptions] = useState<any[]>([]);
+
   // 生成各币种数据
   const bitcoinData = generateCoinData('Bitcoin');
   const ethereumData = generateCoinData('Ethereum');
@@ -110,6 +110,25 @@ const SportsLotteryHall: React.FC = () => {
     '4': caishenData, // Caishen
     '5': tbcData,     // TBC
   };
+
+  useEffect(() => {
+    const list = {
+        all: '/icons/pajamas_earth.svg',
+        Bitcoin: '/icons/formkit_bitcoin.svg',
+        Ethereum: '/icons/picon_ethereum.svg',
+        Caishen: '/icons/token_solana.svg',
+        TBC: '/icons/Vector.svg',
+      }
+      const newOptions = Object.keys(list).map((item,index) => {
+        return {
+          key: index,
+          icon: list[item as keyof typeof list],
+          text: item === 'all' ?  '全部' : item,
+          count: allVoteData[String(index + 1) as keyof typeof allVoteData]?.length || 0
+        }
+      }) 
+      setOptions(newOptions);
+  }, []);
 
   // 每页数据量
   const pageSize = 20; // 调整每页显示数量，因为数据量变少了（每组24个）
@@ -166,7 +185,7 @@ const SportsLotteryHall: React.FC = () => {
           {options.map((item,index) => (
             <div className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} key={index} onClick={() => handleTabChange(String(index+1))}>
               <img src={item.icon} className={styles.icon} alt={item.text} />
-              <div className={styles.text}>{item.text} <span>({item.random})</span></div>
+              <div className={styles.text}>{item.text} <span>({item.count})</span></div>
             </div>
           ))}
         </div>

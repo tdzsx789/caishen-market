@@ -261,6 +261,8 @@ const VoteDetail: React.FC = () => {
     history.push('/SportsLotteryHall/myOrders');
   };
 
+  console.log('!currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0', !currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0)
+
   return (
     <div className={styles.container}>
       <PageBack title={'返回首页平台'} />
