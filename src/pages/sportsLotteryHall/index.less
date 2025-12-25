@@ -127,7 +127,29 @@
   .container,.tabCard{
     min-width: 100vw !important;
   }
-  .content,.tabGroup,.title{
+  .tabCard,.tabGroup{
+    width: 100vw !important;
+  }
+  .content,.title{
     width: 90vw !important;
+  }
+  .tabGroup{ 
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 0;
+    .tabItem {
+      .text {
+        width: max-content;
+      }
+    }
+    &::-webkit-scrollbar {
+      height: 0;
+      display: none;
+    }
+    
   }
 }

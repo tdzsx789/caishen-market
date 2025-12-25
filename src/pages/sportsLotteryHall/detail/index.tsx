@@ -214,9 +214,12 @@ const VoteDetail: React.FC = () => {
 
   // 获取预测结果显示值
   const getPredictionValue = (): string => {
-    // 这里可以根据实际需求返回预测结果的显示值
-    // 暂时返回一个示例值
-    return `¥ ${voteData.tradingVolume.toLocaleString()}`;
+    if (!currentBet.option) return '';
+    // 根据选择的选项返回对应的显示值
+    const optionText = currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text;
+    // 提取数字部分，例如 "↑ 1,000,000" -> "1,000,000"
+    const match = optionText.match(/[\d,]+/);
+    return match ? match[0] : optionText;
   };
 
   // 快速加注
@@ -268,7 +271,7 @@ const VoteDetail: React.FC = () => {
             </div>
             <div className={styles.tradeInfo}>
               <div className={styles.tradeItem}>
-                <div className={styles.label}>总交易量 </div>
+                <div className={styles.label}>总交易量</div>
                 <div className={styles.value}>${voteData.tradingVolume.toLocaleString()}</div>
               </div>
               <div className={styles.tradeItem}>
@@ -352,12 +355,12 @@ const VoteDetail: React.FC = () => {
           {voteData.status !== 'isEnd' ?<Card className={`${styles.CardBg} ${styles.bettingResult}`}>
             <div className={styles.amountSection}>
               <div className={styles.betTitle}>请投注</div>
-              
-              {/* 当前投注统计 */}
-              <div className={styles.currentBetStats}>
-                <img className={styles.statsArrow} src="/icons/Icon10.png" alt="" />
-                <span className={styles.statsValue}>900,000</span>
-              </div>
+              {currentBet.option && (
+                <div className={styles.currentBetStats}>
+                  <img className={styles.statsArrow} src="/icons/Icon10.png" alt="" />
+                  <span className={styles.statsValue}>{getPredictionValue()}</span>
+                </div>
+              )}
 
               {/* 选择是/否按钮 */}
               {currentBet.option ? (
@@ -392,9 +395,9 @@ const VoteDetail: React.FC = () => {
                     value={currentBet.amount}
                     onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
                     placeholder="请输入下注金额"
+                    disabled={!isLoggedIn || voteData.status !== 'isEnd'}
                   />
                 </div>
-                {/* 快速加注按钮 */}
                 <div className={styles.quickAddButtons}>
                   <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(10)}>+ 10</button>
                   <button className={styles.quickAddBtn} onClick={() => handleQuickAdd(50)}>+ 50</button>
@@ -404,38 +407,48 @@ const VoteDetail: React.FC = () => {
               </div>
 
               {/* 收益信息 */}
-              <div className={styles.winningsSection}>
-                <div className={styles.winningsLabel}>
-                  赢
-                  <div className={styles.oddsDisplay}>{getOddsDisplay()}</div>
+              {currentBet.amount > 0 && (
+                <div className={styles.winningsSection}>
+                  <div className={styles.winningsAmount}>
+                    ${calculateWinnings().toLocaleString()}
+                  </div>
+                  <div className={styles.averagePrice}>
+                    平均价格 {getAveragePrice()} 美分 <img src='/icons/Icon13.png' alt=''/>
+                  </div>
                 </div>
-                <div className={styles.winningsAmount}>
-                  ${currentBet.amount > 0 ? calculateWinnings().toLocaleString() : '0'}
-                </div>
-                <div className={styles.averagePrice}>
-                  平均价格 {getAveragePrice()} 美分 <img src='/icons/Icon13.png' alt=''/>
-                </div>
-              </div>
+              )}
 
               {/* 警告提示 */}
               <div className={styles.warningBox}>
                 <ExclamationCircleOutlined className={styles.warningIcon} />
                 <div className={styles.warningText}>
-                  请投注前请仔细阅读<span>《平台条款与规则》</span>投注即表示您已同意相关条款。
+                  请投注前请仔细阅读<span onClick={() => setShowRuleModal(true)} style={{ cursor: 'pointer' }}>《平台条款与规则》</span>投注即表示您已同意相关条款。
                 </div>
               </div>
 
               {/* 确认按钮 */}
-              <Button
-                type="primary"
-                size="large"
-                className={styles.confirmBetButton}
-                onClick={handleConfirmBetClick}
-              >
-                确认投注
-              </Button>
+              {!isLoggedIn ? (
+                <Button
+                  type="primary"
+                  size="large"
+                  className={styles.confirmBetButton}
+                  onClick={() => history.push('/user/login')}
+                >
+                  登录后投注
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  size="large"
+                  className={styles.confirmBetButton}
+                  onClick={handleConfirmBetClick}
+                  disabled={!currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0}
+                >
+                  确认投注
+                </Button>
+              )}
             </div>
-          </Card> : (
+            </Card> : (
             <Card className={`${styles.CardBg} ${styles.bettingResult}`}>
               <div className={styles.bettingResultLabel}>
                 <div className={styles.label}>投注结果</div>
