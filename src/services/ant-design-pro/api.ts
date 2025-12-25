@@ -118,3 +118,35 @@ export async function removeRule(options?: { [key: string]: any }) {
     },
   });
 }
+
+/**
+ * 钱包授权登录接口
+ * POST /api/wallet/auth
+ * 在钱包网站确认授权后，回传账户信息(头像、昵称、剩余积分)
+ */
+export async function walletAuth(body: {
+  avatar?: string;
+  nickname?: string;
+  balance?: number;
+  walletAccount?: string;
+  token?: string;
+}, options?: { [key: string]: any }) {
+  return request<{
+    data: {
+      id: number;
+      username: string;
+      email: string;
+      avatar: string;
+      balance: number;
+      access: string;
+      isFirstTime: boolean; // 是否首次授权
+    };
+  }>('/api/wallet/auth', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

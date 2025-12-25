@@ -2,7 +2,7 @@
 
 ## 基础信息
 
-- **Base URL**: `http://192.168.5.138:8000`
+- **Base URL**: `http://192.168.3.11:8000/`
 - **Content-Type**: `application/json`
 - **认证方式**: Bearer Token (JWT)
 

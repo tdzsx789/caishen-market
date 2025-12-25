@@ -1,0 +1,149 @@
+.balanceContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  .balanceDisplay {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #1A1A24;
+    border: 1px solid #364153;
+    border-radius: 10px;
+  }
+  .userAvatar{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+  .balanceAmount {
+    color: #ffffff;
+    font-family: Inter;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.15px;
+  }
+  .refreshButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #99A1AF;
+    .refreshIcon {
+      font-size: 14px;
+    }
+  }
+  
+  .connectWalletButton {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #AA0F0A;
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: PingFang SC;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.15px;
+    cursor: pointer;
+    img{
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+  }
+   .avatarWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 0px;
+    &:hover{
+      background: none;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+    }
+    .avatarDropdownIcon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+
+
+
+// 下拉菜单样式
+.dropdownOverlay {
+  .ant-dropdown-menu {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+    .ant-dropdown-menu-item {
+      color: rgba(255, 255, 255, 0.85);
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      .anticon {
+        margin-right: 8px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.dropdownContent {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+// 下拉菜单头部样式（在 AvatarDropdown 组件中使用）
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+
+  .ant-avatar {
+    flex-shrink: 0;
+  }
+
+  .userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .userName {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .userRole {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
