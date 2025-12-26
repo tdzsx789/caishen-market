@@ -10,7 +10,7 @@ import { request } from '@umijs/max';
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
     data: {
-      id: number;
+      id: string;
       username: string;
       email: string;
       avatar: string;
@@ -43,7 +43,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
     currentAuthority: string;
     token: string;
     user: {
-      id: number;
+      id: string;
       username: string;
       email: string;
       avatar: string;
@@ -133,7 +133,7 @@ export async function walletAuth(body: {
 }, options?: { [key: string]: any }) {
   return request<{
     data: {
-      id: number;
+      id: string;
       username: string;
       email: string;
       avatar: string;

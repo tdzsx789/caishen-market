@@ -52,8 +52,8 @@ export async function getInitialState(): Promise<{
     if (authToken || (avatar && nickname && balance)) {
       try {
         // 处理昵称：超过10位时截取前10位
-        const processedNickname = nickname && nickname.length > 10 
-          ? nickname.substring(0, 10) 
+        const processedNickname = nickname && nickname.length > 10
+          ? nickname.substring(0, 10)
           : nickname;
 
         const msg = await walletAuth({
@@ -115,20 +115,20 @@ const AppInitWrapper = (props: { children: React.ReactNode }) => {
 
       // 尝试从 localStorage 恢复模拟用户
       const mockUserStr = localStorage.getItem('mock_user');
-      if (mockUserStr) {
-        try {
-          const mockUser = JSON.parse(mockUserStr);
-          if (mockUser) {
-             setInitialState((s) => ({
-               ...s,
-               currentUser: mockUser,
-             }));
-             // 如果是模拟用户，可能不需要再去 fetch 真实接口，或者 fetch 失败也不影响
-          }
-        } catch (e) {
-          console.error('Failed to parse mock user', e);
-        }
-      }
+      // if (mockUserStr) {
+      //   try {
+      //     const mockUser = JSON.parse(mockUserStr);
+      //     if (mockUser) {
+      //        setInitialState((s) => ({
+      //          ...s,
+      //          currentUser: mockUser,
+      //        }));
+      //        // 如果是模拟用户，可能不需要再去 fetch 真实接口，或者 fetch 失败也不影响
+      //     }
+      //   } catch (e) {
+      //     console.error('Failed to parse mock user', e);
+      //   }
+      // }
 
       if (initialState?.fetchUserInfo) {
         try {
@@ -208,6 +208,7 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: 'http://192.168.3.11:8000/',
+  // baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:5260' : 'http://13.212.168.127:5260',
+  baseURL: 'http://13.212.168.127:5260',
   ...errorConfig,
 };

@@ -8,7 +8,9 @@ import RuleModal from './components/RuleModal'
 import ConfirmBetModal from './components/ConfirmBetModal'
 import BetSuccessModal from './components/BetSuccessModal'
 import React, { useState } from 'react';
+import { createAccount } from '@/services/account/api';
 import styles from './index.less';
+import mockUser from '@/mockData/users.json';
 interface VoteOption {
   text: string;
   odds: string;
@@ -104,7 +106,7 @@ const getVoteDetail = (id: string): VoteData | null => {
 
 const VoteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { initialState } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
   const isLoggedIn = !!initialState?.currentUser;
   const { state } = useLocation();
   const [voteData, setVoteData] = useState<VoteData | null>((state as VoteData) || (id ? getVoteDetail(id) : null));
@@ -437,7 +439,22 @@ const VoteDetail: React.FC = () => {
                   type="primary"
                   size="large"
                   className={styles.confirmBetButton}
-                  onClick={() => history.push('/user/login')}
+                  onClick={async () => {
+                    try {
+                      await createAccount(mockUser);
+                      setInitialState((s) => ({ 
+                        ...s, 
+                        currentUser: {
+                          ...mockUser,
+                          id: mockUser.id,
+                          username: mockUser.name, 
+                          email: '', 
+                        } 
+                      }));
+                    } catch (error) {
+                      console.error('Failed to create account:', error);
+                    }
+                  }}
                 >
                   登录后投注
                 </Button>
