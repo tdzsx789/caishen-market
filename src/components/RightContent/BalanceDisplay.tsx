@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import { AvatarDropdown } from './AvatarDropdown';
+import { createAccount } from '@/services/account/api';
+import mockUser from '@/mockData/users.json';
 
 export const BalanceDisplay: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -13,11 +15,21 @@ export const BalanceDisplay: React.FC = () => {
   const currentUser = initialState?.currentUser;
 
   // 处理连接钱包（跳转到钱包网站授权）
-  const handleConnectWallet = () => {
-     history.push('/user/login')
-    // const walletAuthUrl = process.env.WALLET_AUTH_URL || 'https://wallet.example.com/auth';
-    // const redirectUrl = encodeURIComponent(window.location.href);
-    // window.location.href = `${walletAuthUrl}?redirect=${redirectUrl}`;
+  const handleConnectWallet = async () => {
+     try {
+       await createAccount(mockUser);
+       setInitialState((s) => ({ 
+          ...s, 
+          currentUser: {
+            ...mockUser,
+            id: mockUser.id,
+            username: mockUser.name, // Mapping name to username if needed, or just keeping it consistent
+            email: '', // Add missing required fields if any
+          } 
+        }));
+     } catch (error) {
+       console.error('Failed to create account:', error);
+     }
   };
 
   // 处理积分刷新（从钱包账户重新获取剩余积分）
