@@ -1,6 +1,6 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Tabs, Pagination } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
 import styles from './index.less';
 
@@ -48,7 +48,7 @@ const generateVoteData = (count: number) => {
   });
 };
 
-const tabLabel=()=>{
+const tabLabel=(allVoteData?: { [key: string]: any[] })=>{
   const list = {
     all: '/icons/pajamas_earth.svg',
     Bitcoin: '/icons/formkit_bitcoin.svg',
@@ -57,11 +57,17 @@ const tabLabel=()=>{
     XRP: '/icons/Vector.svg',
   }
   const options = Object.keys(list).map((item,index) => {
+    // 计算该tab中状态为 'InProgress'（局中）的数量
+    const tabKey = String(index + 1);
+    const inProgressCount = allVoteData?.[tabKey]?.filter(
+      (vote) => vote.status === 'InProgress'
+    ).length || 0;
+    
     return {
       key: index,
       icon: list[item as keyof typeof list],
       text: item === 'all' ?  '全部' : item,
-      random: Math.floor(Math.random() * 100)
+      inProgressCount: inProgressCount
     }
   }) 
   return options
@@ -76,7 +82,6 @@ const SportsLotteryHall: React.FC = () => {
     '4': 1,
     '5': 1,
   });
-  const [options, setOptions] = useState(tabLabel())
   // 每个tab的数据（这里用模拟数据，实际应该从接口获取）
   const allVoteData = {
     '1': generateVoteData(450), // 450个数据，3页
@@ -85,6 +90,10 @@ const SportsLotteryHall: React.FC = () => {
     '4': generateVoteData(150), // 150个数据，1页
     '5': generateVoteData(750), // 750个数据，5页
   };
+  
+  const [options, setOptions] = useState(tabLabel(allVoteData))
+  const tabGroupRef = useRef<HTMLDivElement>(null);
+  const tabItemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // 每页3个*50行 = 150个
   const pageSize = 150;
@@ -122,6 +131,24 @@ const SportsLotteryHall: React.FC = () => {
 
   const handleTabChange = (key: string) => {
     setActiveTab(key);
+    // 滚动到选中的tab，使其居中显示
+    const tabIndex = Number(key) - 1;
+    const tabItem = tabItemRefs.current[String(tabIndex)];
+    const tabGroup = tabGroupRef.current;
+    
+    if (tabItem && tabGroup) {
+      const itemOffsetLeft = tabItem.offsetLeft;
+      const itemWidth = tabItem.offsetWidth;
+      const containerWidth = tabGroup.offsetWidth;
+      
+      // 计算目标滚动位置：选中项的中心点对齐容器的中心点
+      const targetScrollLeft = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+      
+      tabGroup.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -131,17 +158,43 @@ const SportsLotteryHall: React.FC = () => {
     });
   };
 
+  // 初始加载时，确保选中的tab居中显示
+  useEffect(() => {
+    const tabIndex = Number(activeTab) - 1;
+    const tabItem = tabItemRefs.current[String(tabIndex)];
+    const tabGroup = tabGroupRef.current;
+    
+    if (tabItem && tabGroup) {
+      const itemOffsetLeft = tabItem.offsetLeft;
+      const itemWidth = tabItem.offsetWidth;
+      const containerWidth = tabGroup.offsetWidth;
+      
+      // 计算目标滚动位置：选中项的中心点对齐容器的中心点
+      const targetScrollLeft = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+      
+      tabGroup.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  }, []); // 只在组件挂载时执行一次
+
   const currentData = getCurrentPageData();
   const total = getTotalCount();
 
   return (
     <div className={styles.container}>
       <div className={styles.tabCard}>
-        <div className={styles.tabGroup}>
+        <div className={styles.tabGroup} ref={tabGroupRef}>
           {options.map((item,index) => (
-            <div className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} key={index} onClick={() => handleTabChange(String(index+1))}>
+            <div 
+              className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} 
+              key={index} 
+              ref={(el) => { tabItemRefs.current[String(index)] = el; }}
+              onClick={() => handleTabChange(String(index+1))}
+            >
               <img src={item.icon} className={styles.icon} alt={item.text} />
-              <div className={styles.text}>{item.text} <span>({item.random})</span></div>
+              <div className={styles.text}>{item.text} <span>({item.inProgressCount})</span></div>
             </div>
           ))}
         </div>

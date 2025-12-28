@@ -79,6 +79,14 @@ ol {
   padding-block: 0;
   padding-inline: 0;
 }
+
+// 隐藏顶部菜单栏折叠按钮
+.ant-pro-global-header-collapsed-button,
+.ant-pro-layout-header .ant-pro-layout-header-action button[aria-label="menu"],
+.ant-pro-layout-header .anticon-menu-unfold,
+.ant-pro-layout-header .anticon-menu-fold {
+  display: none !important;
+}
 @media (max-width: 768px) {
   .ant-table {
     width: 100%;

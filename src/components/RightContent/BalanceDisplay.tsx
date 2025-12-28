@@ -95,11 +95,7 @@ export const BalanceDisplay: React.FC = () => {
             handleRefresh();
           }}
         >
-          {refreshing ? (
-            <Spin size="small" />
-          ) : (
-            <ReloadOutlined className={styles.refreshIcon} />
-          )}
+          <ReloadOutlined className={styles.refreshIcon} />
         </div>
       </div>
       <AvatarDropdown>

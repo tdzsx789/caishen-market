@@ -6,7 +6,7 @@ import PageBack from '@/components/PageBack'
 import RuleModal from './components/RuleModal'
 import ConfirmBetModal from './components/ConfirmBetModal'
 import BetSuccessModal from './components/BetSuccessModal'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 interface VoteOption {
   text: string;
@@ -258,7 +258,9 @@ const VoteDetail: React.FC = () => {
   const handleGoToOrders = () => {
     history.push('/SportsLotteryHall/myOrders');
   };
-
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
   return (
     <div className={styles.container}>
       <PageBack title={'返回首页平台'} />
