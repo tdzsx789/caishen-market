@@ -416,6 +416,17 @@
       &:hover,&:active {
         background: #aa0f0abb;
       }
+
+      &[disabled] {
+        background: #364153 !important;
+        color: #99A1AF !important;
+        cursor: not-allowed;
+        
+        &:hover {
+          background: #364153 !important;
+        }
+      }
+
       :global(.ant-btn-primary) {
         background: #AA0F0A;
         border: none;

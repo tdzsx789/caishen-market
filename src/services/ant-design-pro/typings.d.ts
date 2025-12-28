@@ -7,7 +7,7 @@ declare namespace API {
     username?: string;
     avatar?: string;
     userid?: string;
-    id?: number;
+    id?: string;
     email?: string;
     signature?: string;
     title?: string;

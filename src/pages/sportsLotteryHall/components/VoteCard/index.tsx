@@ -10,7 +10,7 @@ interface VoteOption {
 
 interface VoteCardProps {
   data: {
-    id: number;
+    id: number | string;
     title?: string;
     description: string;
     activityDescription?: string;
@@ -32,8 +32,7 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
     // 通过 state 传递数据到详情页
     history.push({
       pathname: `/SportsLotteryHall/detail/${data.id}`,
-      state: data,
-    });
+    }, data);
   };
   
   const statusList ={

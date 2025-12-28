@@ -1,0 +1,50 @@
+name: Auto Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取仓库代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 设置 Node.js 环境并缓存依赖
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 请确保此处版本与您的服务器和项目兼容
+          cache: 'npm'
+
+      # 3. 通过 SSH 连接服务器执行部署任务
+      - name: Execute deploy script via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          port: ${{ secrets.SERVER_PORT }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/1panel/www/sites/caishen-market
+            #删除本地所有更改
+            git fetch origin
+            git reset --hard origin/main
+            #拉取代码
+            git pull origin main
+            #安装依赖
+            npm install
+            # 确保构建环境干净，如果您的构建工具不会自动清理，可以增加删除dist目录的命令，例如：rm -rf dist
+            npm run build
+            # 清空目标目录，这里也需要sudo
+            sudo rm -rf /opt/1panel/www/sites/caishen1/index/*
+            # 复制时使用sudo
+            sudo cp -r /opt/1panel/www/sites/caishen-market/dist/* /opt/1panel/www/sites/caishen1/index/
+            # 请根据您的实际部署方式决定是否需要下面的命令，并谨慎使用：
+            # docker compose restart
+
+      # 4. （重要）清理临时文件
+      - name: Cleanup
+        run: rm -f deploy_key.pem # 此步骤旨在清理可能生成的临时私钥文件，确保安全。[6](@ref)

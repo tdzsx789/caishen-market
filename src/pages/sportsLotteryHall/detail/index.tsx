@@ -2,12 +2,19 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Button, Card, Space, message, Input, InputNumber, Table, Tag, Radio } from 'antd';
 import { ArrowUpOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { history, useParams, useModel, useLocation } from '@umijs/max';
+import LineChart from '@/components/LineChart';
 import PageBack from '@/components/PageBack'
 import RuleModal from './components/RuleModal'
 import ConfirmBetModal from './components/ConfirmBetModal'
 import BetSuccessModal from './components/BetSuccessModal'
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import React, { useState } from 'react';
+import { createAccount } from '@/services/account/api';
+>>>>>>> main
 import styles from './index.less';
+import mockUser from '@/mockData/users.json';
 interface VoteOption {
   text: string;
   odds: string;
@@ -24,7 +31,7 @@ interface BetRecord {
 }
 
 interface VoteData {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   activityDescription: string; // 活动说明
@@ -43,7 +50,7 @@ interface VoteData {
 
 // 模拟获取详情数据（实际应该从接口获取）
 const getVoteDetail = (id: string): VoteData | null => {
-  const voteId = parseInt(id);
+  const voteId = id;
   const isTime = 0.4;
   const status = isTime > 0.7 ? 'isEnd' : isTime > 0.5 ? 'isStart' : 'InProgress';
   
@@ -86,11 +93,11 @@ const getVoteDetail = (id: string): VoteData | null => {
     status: status as 'InProgress' | 'isStart' | 'isEnd',
     userBetStatus: isTime > 0.5,
     option1: {
-      text: `选项A - ${voteId}`,
+      text: `是`,
       odds: '1.85',
     },
     option2: {
-      text: `选项B - ${voteId}`,
+      text: `否`,
       odds: '1.95',
     },
     result: status === 'isEnd' ? {
@@ -103,9 +110,10 @@ const getVoteDetail = (id: string): VoteData | null => {
 
 const VoteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { initialState } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
   const isLoggedIn = !!initialState?.currentUser;
-  const voteData = id ? getVoteDetail(id) : null;
+  const { state } = useLocation();
+  const [voteData, setVoteData] = useState<VoteData | null>((state as VoteData) || (id ? getVoteDetail(id) : null));
   const [showRuleModal, setShowRuleModal] = useState(false);
   const [showConfirmBetModal, setShowConfirmBetModal] = useState(false);
   const [showBetSuccessModal, setShowBetSuccessModal] = useState(false);
@@ -254,6 +262,9 @@ const VoteDetail: React.FC = () => {
   useEffect(()=>{
     window.scrollTo(0,0)
   },[])
+
+  console.log('!currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0', !currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0)
+
   return (
     <div className={styles.container}>
       <PageBack title={'返回首页平台'} />
@@ -264,6 +275,7 @@ const VoteDetail: React.FC = () => {
             <div className={`${styles.statusTag} ${statusInfo.className}`}>
               {statusInfo.text}
             </div>
+            {voteData.status === 'InProgress' && <LineChart coinName={voteData.id.toString().split('-')[0]} />}
             <div className={styles.tradeInfo}>
               <div className={styles.tradeItem}>
                 <div className={styles.label}>总交易量</div>
@@ -390,7 +402,7 @@ const VoteDetail: React.FC = () => {
                     value={currentBet.amount}
                     onChange={(value) => setCurrentBet({ ...currentBet, amount: value || 0 })}
                     placeholder="请输入下注金额"
-                    disabled={!isLoggedIn || voteData.status !== 'isEnd'}
+                    disabled={!isLoggedIn || voteData.status !== 'InProgress'}
                   />
                 </div>
                 <div className={styles.quickAddButtons}>
@@ -427,7 +439,22 @@ const VoteDetail: React.FC = () => {
                   type="primary"
                   size="large"
                   className={styles.confirmBetButton}
-                  onClick={() => history.push('/user/login')}
+                  onClick={async () => {
+                    try {
+                      await createAccount(mockUser);
+                      setInitialState((s) => ({ 
+                        ...s, 
+                        currentUser: {
+                          ...mockUser,
+                          id: mockUser.id,
+                          username: mockUser.name, 
+                          email: '', 
+                        } 
+                      }));
+                    } catch (error) {
+                      console.error('Failed to create account:', error);
+                    }
+                  }}
                 >
                   登录后投注
                 </Button>
