@@ -240,13 +240,6 @@ const VoteDetail: React.FC = () => {
     return 0.3;
   };
 
-  // 计算赔率显示
-  const getOddsDisplay = (): string => {
-    if (!currentBet.option) return '1:1.0';
-    const odds = currentBet.option === 'option1' ? parseFloat(voteData.option1.odds) : parseFloat(voteData.option2.odds);
-    return `1:${odds.toFixed(1)}`;
-  };
-
   const statusConfig = {
     InProgress: { text: '进行中', className: styles.statusInProgress },
     isStart: { text: '即将开始', className: styles.statusIsStart },
@@ -384,7 +377,7 @@ const VoteDetail: React.FC = () => {
                 </div>
               ) : (
                 <div className={styles.choicePlaceholder}>
-                  请先选择左侧表格中的投注选项
+                  请先选择表格中的投注选项
                 </div>
               )}
               <div className={styles.betAmountSection}>
