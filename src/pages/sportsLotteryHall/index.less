@@ -23,53 +23,6 @@
       }
     }
 
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin: 32px auto;
-      :global{
-        .ant-pagination {
-          display: flex;
-          justify-content: center;
-        }
-        .ant-pagination-item,.ant-pagination-next,.ant-pagination-prev{
-          min-width: 40px;
-          height: 40px;
-          background-color: #1A1A24;
-          border: 1px solid #364153;
-          font-weight: 400;
-          padding: 0;
-          font-style: Regular;
-          font-size: 16px;
-          color: #99A1AF !important;
-          a,.ant-pagination-item-link{
-            width: 40px !important;
-            height: 40px !important;
-            color: #99A1AF !important;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          .anticon,.anticon-right,.anticon-left{
-            width: 20px !important;
-            height: 20px !important;
-            svg{
-              fill: #fff;
-              width: 20px !important;
-              height: 20px !important;
-            }
-          }
-        }
-        .ant-pagination-item-active{
-          background-color: #AA0F0A;
-          border: 1px solid #AA0F0A;
-          color: #FFFFFF !important;
-          a{
-            color: #FFFFFF !important;
-          }
-        }
-      }
-    }
   }
   .tabCard{
     width: 100vw;
@@ -119,6 +72,39 @@
     color: #FFFFFF;
     line-height: 32px;
   }
+  .backToTop {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    width: 48px;
+    height: 48px;
+    background-color: #AA0F0A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(170, 15, 10, 0.3);
+    
+    :global {
+      .anticon {
+        font-size: 20px;
+        color: #FFFFFF;
+      }
+    }
+    
+    &:hover {
+      background-color: #CC1A14;
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(170, 15, 10, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
 }
 
 @media (max-width: 1200px) {
@@ -161,5 +147,16 @@
       display: none;
     }
     
+  }
+  .backToTop {
+    right: 20px;
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+    :global {
+      .anticon {
+        font-size: 18px;
+      }
+    }
   }
 }

@@ -1,7 +1,8 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { Tabs, Pagination } from 'antd';
+import { useIsMobile } from '@/hooks/useIsMobile'
+import { ArrowUpOutlined } from '@ant-design/icons';
 import React, { useState, useRef, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
+import PaginationWithLoadMore from './components/PaginationWithLoadMore';
 import styles from './index.less';
 
 // 模拟投票数据
@@ -90,13 +91,12 @@ const SportsLotteryHall: React.FC = () => {
     '4': generateVoteData(150), // 150个数据，1页
     '5': generateVoteData(750), // 750个数据，5页
   };
-  
+  const isMobile = useIsMobile();
   const [options, setOptions] = useState(tabLabel(allVoteData))
   const tabGroupRef = useRef<HTMLDivElement>(null);
   const tabItemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
-  // 每页3个*50行 = 150个
-  const pageSize = 150;
 
   // 排序函数：进行中 > 未开始 > 已结束；同状态下按创建时间降序
   const sortVoteData = (data: typeof allVoteData['1']) => {
@@ -114,19 +114,10 @@ const SportsLotteryHall: React.FC = () => {
     });
   };
 
-  // 获取当前tab的当前页数据
-  const getCurrentPageData = () => {
+  // 获取当前tab的排序后数据
+  const getSortedData = () => {
     const allData = allVoteData[activeTab as keyof typeof allVoteData] || [];
-    // 先排序
-    const sortedData = sortVoteData(allData);
-    // 再分页
-    const start = (currentPage[activeTab] - 1) * pageSize;
-    const end = start + pageSize;
-    return sortedData.slice(start, end);
-  };
-  // 获取当前tab的总数据量
-  const getTotalCount = () => {
-    return allVoteData[activeTab as keyof typeof allVoteData]?.length || 0;
+    return sortVoteData(allData);
   };
 
   const handleTabChange = (key: string) => {
@@ -149,14 +140,30 @@ const SportsLotteryHall: React.FC = () => {
         behavior: 'smooth'
       });
     }
+    
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage({
-      ...currentPage,
-      [activeTab]: page,
+
+  // 回到顶部函数
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
     });
   };
+
+  // 监听滚动，控制回到顶部按钮的显示
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setShowBackToTop(scrollTop > 300); // 滚动超过300px时显示按钮
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   // 初始加载时，确保选中的tab居中显示
   useEffect(() => {
@@ -179,9 +186,6 @@ const SportsLotteryHall: React.FC = () => {
     }
   }, []); // 只在组件挂载时执行一次
 
-  const currentData = getCurrentPageData();
-  const total = getTotalCount();
-
   return (
     <div className={styles.container}>
       <div className={styles.tabCard}>
@@ -201,21 +205,32 @@ const SportsLotteryHall: React.FC = () => {
       </div>
       <div className={styles.title}>{options[Number(activeTab)-1]?.text}</div>
       <div className={styles.content}>
-        <div className={styles.cardList}>
-          {currentData.map((item) => (
-            <VoteCard key={item.id} data={item} />
-          ))}
-        </div>
-        <div className={styles.pagination}>
-          <Pagination
-            current={currentPage[activeTab]}
-            total={total}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            showSizeChanger={false}
-          />
-        </div>
+        <PaginationWithLoadMore
+          dataSource={getSortedData()}
+          pageSize={50}
+          mobilePageSize={20}
+          currentPage={currentPage[activeTab]}
+          onPageChange={(page) => {
+            setCurrentPage({
+              ...currentPage,
+              [activeTab]: page,
+            });
+          }}
+        >
+          {(data) => (
+            <div className={styles.cardList}>
+              {data.map((item) => (
+                <VoteCard key={item.id} data={item} />
+              ))}
+            </div>
+          )}
+        </PaginationWithLoadMore>
       </div>
+      {showBackToTop && isMobile && (
+        <div className={styles.backToTop} onClick={scrollToTop}>
+          <ArrowUpOutlined />
+        </div>
+      )}
     </div>
   );
 };
