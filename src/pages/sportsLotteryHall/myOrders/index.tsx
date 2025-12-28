@@ -1,6 +1,7 @@
 import PageBack from '@/components/PageBack'
 import React, { useState,useEffect } from 'react';
 import Card from './components/Card'
+import BackToTop from '@/components/BackToTop'
 import RenderOrderCard from './components/RenderOrderCard'
 import PaginationWithLoadMore from '../components/PaginationWithLoadMore';
 import styles from './index.less';
@@ -91,6 +92,7 @@ const MyOrders: React.FC = () => {
           </div>
         )}
       </PaginationWithLoadMore>
+      <BackToTop />
     </div>
   );
 };

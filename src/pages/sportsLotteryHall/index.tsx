@@ -1,7 +1,6 @@
-import { useIsMobile } from '@/hooks/useIsMobile'
-import { ArrowUpOutlined } from '@ant-design/icons';
 import React, { useState, useRef, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
+import BackToTop from '@/components/BackToTop'
 import PaginationWithLoadMore from './components/PaginationWithLoadMore';
 import styles from './index.less';
 
@@ -91,13 +90,9 @@ const SportsLotteryHall: React.FC = () => {
     '4': generateVoteData(150), // 150个数据，1页
     '5': generateVoteData(750), // 750个数据，5页
   };
-  const isMobile = useIsMobile();
   const [options, setOptions] = useState(tabLabel(allVoteData))
   const tabGroupRef = useRef<HTMLDivElement>(null);
   const tabItemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const [showBackToTop, setShowBackToTop] = useState(false);
-
-
   // 排序函数：进行中 > 未开始 > 已结束；同状态下按创建时间降序
   const sortVoteData = (data: typeof allVoteData['1']) => {
     const statusOrder = { InProgress: 1, isStart: 2, isEnd: 3 };
@@ -142,28 +137,6 @@ const SportsLotteryHall: React.FC = () => {
     }
     
   };
-
-
-  // 回到顶部函数
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
-  // 监听滚动，控制回到顶部按钮的显示
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setShowBackToTop(scrollTop > 300); // 滚动超过300px时显示按钮
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   // 初始加载时，确保选中的tab居中显示
   useEffect(() => {
@@ -226,11 +199,7 @@ const SportsLotteryHall: React.FC = () => {
           )}
         </PaginationWithLoadMore>
       </div>
-      {showBackToTop && isMobile && (
-        <div className={styles.backToTop} onClick={scrollToTop}>
-          <ArrowUpOutlined />
-        </div>
-      )}
+      <BackToTop />
     </div>
   );
 };
