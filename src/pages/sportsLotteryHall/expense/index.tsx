@@ -98,7 +98,7 @@ const Expense: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <PageBack title={'返回首页平台'} />
+      <PageBack title={'返回首页平台'} goBack={true} />
       <div className={styles.title}>明细记录</div>
       {/* 明细表格 */}
       <div className={styles.tableCard}>

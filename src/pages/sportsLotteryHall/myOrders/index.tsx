@@ -1,6 +1,6 @@
 import { Tabs, Tag, Statistic, Row, Col, Pagination } from 'antd';
 import PageBack from '@/components/PageBack'
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Card from './components/Card'
 import RenderOrderCard from './components/RenderOrderCard'
 import styles from './index.less';
@@ -67,10 +67,13 @@ const MyOrders: React.FC = () => {
     const end = start + pageSize;
     return allPendingOrders.slice(start, end);
   };
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
 
   return (
     <div className={styles.container}>
-      <PageBack title={'返回首页平台'} />
+      <PageBack title={'返回首页平台'}  goBack={true} />
       <div className={styles.title}>我的投注订单</div>
       <div className={styles.stateRow}>
         {stateList.map((item,index) =>  <Card key={index} item={item} />)}
