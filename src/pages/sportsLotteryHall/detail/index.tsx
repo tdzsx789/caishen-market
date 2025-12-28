@@ -7,12 +7,8 @@ import PageBack from '@/components/PageBack'
 import RuleModal from './components/RuleModal'
 import ConfirmBetModal from './components/ConfirmBetModal'
 import BetSuccessModal from './components/BetSuccessModal'
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
-import React, { useState } from 'react';
 import { createAccount } from '@/services/account/api';
->>>>>>> main
 import styles from './index.less';
 import mockUser from '@/mockData/users.json';
 interface VoteOption {
