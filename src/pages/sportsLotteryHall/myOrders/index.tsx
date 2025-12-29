@@ -1,8 +1,9 @@
-import { Tabs, Tag, Statistic, Row, Col, Pagination } from 'antd';
 import PageBack from '@/components/PageBack'
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Card from './components/Card'
+import BackToTop from '@/components/BackToTop'
 import RenderOrderCard from './components/RenderOrderCard'
+import PaginationWithLoadMore from '../components/PaginationWithLoadMore';
 import styles from './index.less';
 // 模拟数据
 const generatePendingOrders = (count: number) => {
@@ -25,7 +26,6 @@ const generatePendingOrders = (count: number) => {
 const MyOrders: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
   const [pendingPage, setPendingPage] = useState<number>(1);
-  const pageSize = 10;
 
   // 模拟数据
   const allPendingOrders = generatePendingOrders(25);
@@ -61,16 +61,13 @@ const MyOrders: React.FC = () => {
       num: Math.floor(Math.random() * 100),
     },
   ]
-  // 分页数据
-  const getPendingData = () => {
-    const start = (pendingPage - 1) * pageSize;
-    const end = start + pageSize;
-    return allPendingOrders.slice(start, end);
-  };
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
 
   return (
     <div className={styles.container}>
-      <PageBack title={'返回首页平台'} />
+      <PageBack title={'返回首页平台'}  goBack={true} />
       <div className={styles.title}>我的投注订单</div>
       <div className={styles.stateRow}>
         {stateList.map((item,index) =>  <Card key={index} item={item} />)}
@@ -82,16 +79,20 @@ const MyOrders: React.FC = () => {
           </div>
         ))}
       </div>
-      <div className={styles.cardList}>
-        {getPendingData().map((order,index) => <RenderOrderCard order={order} key={index} />)}
-      </div>
-      <Pagination
-        current={pendingPage}
-        total={allPendingOrders.length}
-        pageSize={pageSize}
-        onChange={(page) => setPendingPage(page)}
-        showSizeChanger={false}
-      />
+      <PaginationWithLoadMore
+        dataSource={allPendingOrders}
+        pageSize={10}
+        mobilePageSize={5}
+        currentPage={pendingPage}
+        onPageChange={(page) => setPendingPage(page)}
+      >
+        {(data) => (
+          <div className={styles.cardList}>
+            {data.map((order,index) => <RenderOrderCard order={order} key={index} />)}
+          </div>
+        )}
+      </PaginationWithLoadMore>
+      <BackToTop />
     </div>
   );
 };

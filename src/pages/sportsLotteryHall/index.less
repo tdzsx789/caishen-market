@@ -23,53 +23,6 @@
       }
     }
 
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin: 32px auto;
-      :global{
-        .ant-pagination {
-          display: flex;
-          justify-content: center;
-        }
-        .ant-pagination-item,.ant-pagination-next,.ant-pagination-prev{
-          min-width: 40px;
-          height: 40px;
-          background-color: #1A1A24;
-          border: 1px solid #364153;
-          font-weight: 400;
-          padding: 0;
-          font-style: Regular;
-          font-size: 16px;
-          color: #99A1AF !important;
-          a,.ant-pagination-item-link{
-            width: 40px !important;
-            height: 40px !important;
-            color: #99A1AF !important;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          .anticon,.anticon-right,.anticon-left{
-            width: 20px !important;
-            height: 20px !important;
-            svg{
-              fill: #fff;
-              width: 20px !important;
-              height: 20px !important;
-            }
-          }
-        }
-        .ant-pagination-item-active{
-          background-color: #AA0F0A;
-          border: 1px solid #AA0F0A;
-          color: #FFFFFF !important;
-          a{
-            color: #FFFFFF !important;
-          }
-        }
-      }
-    }
   }
   .tabCard{
     width: 100vw;
@@ -117,6 +70,7 @@
     margin: 18px auto;
     font-weight: 400;
     font-size: 24px;
+    color: #FFFFFF;
     line-height: 32px;
   }
 }
@@ -134,14 +88,23 @@
   .content,.title{
     width: 90vw !important;
   }
+  .title{
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .tabCard{
+    padding: 0 !important;
+    overflow: hidden;
+  }
   .tabGroup{ 
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
+    gap: 10px !important;
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 0;
+    padding: 10px 10px;
     .tabItem {
       .text {
         width: max-content;
@@ -152,5 +115,16 @@
       display: none;
     }
     
+  }
+  .backToTop {
+    right: 20px;
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+    :global {
+      .anticon {
+        font-size: 18px;
+      }
+    }
   }
 }

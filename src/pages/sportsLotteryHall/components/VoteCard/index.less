@@ -113,7 +113,7 @@
     margin: 16px auto 13px;
     background-color: #1E2939;
   }
-  .tradeVolume{
+  .infoRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -121,16 +121,20 @@
     font-style: Regular;
     font-size: 12px;
     margin-top: 8px;
-    .text{
-      color: #99A1AF;
-      img{
+
+    .infoItem {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      
+      img {
         width: 12px;
         height: 12px;
-        margin-right: 4px;
       }
-    }
-    .number{
-      color: #FFFFFF;
+      
+      .number {
+        color: #FFFFFF;
+      }
     }
   }
 }

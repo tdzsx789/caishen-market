@@ -69,13 +69,15 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
         </div>
       </div>
       <div className={styles.line}></div>
-      <div className={styles.tradeVolume}>
-        <div className={styles.text}><img src="/icons/Icon.png" alt="" />交易量</div>
-        <div className={styles.number}>{data.tradingVolume.toLocaleString()}</div>
-      </div>
-      <div className={styles.tradeVolume}>
-        <div className={styles.text}><img src="/icons/Icon1.png" alt="" />结束时间</div>
-        <div className={styles.number}>{new Date(data.endTime).toLocaleString('zh-CN')}</div>
+      <div className={styles.infoRow}>
+        <div className={styles.infoItem}>
+          <img src="/icons/Icon.png" alt="" />
+          <div className={styles.number}>{data.tradingVolume.toLocaleString()}</div>
+        </div>
+        <div className={styles.infoItem}>
+          <img src="/icons/Icon1.png" alt="" />
+          <div className={styles.number}>{new Date(data.endTime).toLocaleString('zh-CN')}</div>
+        </div>
       </div>
     </Card>
   );

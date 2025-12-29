@@ -1,21 +1,21 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { Tabs, Pagination } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
 import VoteCardDouble from './components/VoteCardDouble';
+import BackToTop from '@/components/BackToTop'
+import PaginationWithLoadMore from './components/PaginationWithLoadMore';
 import styles from './index.less';
 
 // 模拟投票数据
 const generateCoinData = (coinName: string) => {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  
+
   // 生成当天24小时的数据
   return Array.from({ length: 24 }, (_, index) => {
     // 设置结束时间为当天的整点（0:00 - 23:00）的下一个小时
     // 例如 index=0 (0点场)，endTime应该是 1:00
     const endTime = new Date(todayStart.getTime() + (index + 1) * 60 * 60 * 1000);
-    
+
     // 状态判断：
     // 基于当前小时段(index)判断
     // 如果 index < 当前小时，为已结束
@@ -23,7 +23,7 @@ const generateCoinData = (coinName: string) => {
     // 如果 index > 当前小时，为即将开始
     let status: 'InProgress' | 'isStart' | 'isEnd';
     const currentHour = now.getHours();
-    
+
     if (index < currentHour) {
       status = 'isEnd';
     } else if (index === currentHour) {
@@ -31,13 +31,13 @@ const generateCoinData = (coinName: string) => {
     } else {
       status = 'isStart';
     }
-    
+
     // 格式化时间用于描述
     const timeStr = `${endTime.getFullYear()}-${String(endTime.getMonth() + 1).padStart(2, '0')}-${String(endTime.getDate()).padStart(2, '0')} ${String(endTime.getHours()).padStart(2, '0')}:00`;
-    
+
     // 随机生成交易量（单位：USDT）
     const tradingVolume = (Math.random() * 1000000 + 10000).toFixed(2);
-    
+
     return {
       id: `${coinName}-${index}`, // 唯一ID
       type: 'multi',
@@ -65,7 +65,7 @@ const generateCoinData = (coinName: string) => {
   });
 };
 
-const tabLabel=()=>{
+const tabLabel = (allVoteData?: { [key: string]: any[] }) => {
   const list = {
     all: '/icons/pajamas_earth.svg',
     Bitcoin: '/icons/formkit_bitcoin.svg',
@@ -73,14 +73,20 @@ const tabLabel=()=>{
     Caishen: '/icons/token_solana.svg',
     TBC: '/icons/Vector.svg',
   }
-  const options = Object.keys(list).map((item,index) => {
+  const options = Object.keys(list).map((item, index) => {
+    // 计算该tab中状态为 'InProgress'（局中）的数量
+    const tabKey = String(index + 1);
+    const inProgressCount = allVoteData?.[tabKey]?.filter(
+      (vote) => vote.status === 'InProgress'
+    ).length || 0;
+
     return {
       key: index,
       icon: list[item as keyof typeof list],
-      text: item === 'all' ?  '全部' : item,
-      random: Math.floor(Math.random() * 100)
+      text: item === 'all' ? '全部' : item,
+      inProgressCount: inProgressCount
     }
-  }) 
+  })
   return options
 }
 
@@ -105,14 +111,14 @@ const SportsLotteryHall: React.FC = () => {
   const generateCoinData2 = (coinName: string) => {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     // 生成当天24小时的数据
     return Array.from({ length: 24 }, (_, index) => {
       const endTime = new Date(todayStart.getTime() + (index + 1) * 60 * 60 * 1000);
-      
+
       let status: 'InProgress' | 'isStart' | 'isEnd';
       const currentHour = now.getHours();
-      
+
       if (index < currentHour) {
         status = 'isEnd';
       } else if (index === currentHour) {
@@ -120,10 +126,10 @@ const SportsLotteryHall: React.FC = () => {
       } else {
         status = 'isStart';
       }
-      
+
       const timeStr = `${endTime.getFullYear()}-${String(endTime.getMonth() + 1).padStart(2, '0')}-${String(endTime.getDate()).padStart(2, '0')} ${String(endTime.getHours()).padStart(2, '0')}:00`;
       const tradingVolume = (Math.random() * 1000000 + 10000).toFixed(2);
-      
+
       // 生成 Odds
       const odds1 = Math.floor(Math.random() * 99) + 1; // 1-99
       const odds2 = 100 - odds1; // 100 - odds1
@@ -159,7 +165,7 @@ const SportsLotteryHall: React.FC = () => {
   const ethereumData2 = generateCoinData2('Ethereum');
   const caishenData2 = generateCoinData2('Caishen');
   const tbcData2 = generateCoinData2('TBC');
-  
+
   // 汇总所有数据（合并原来的和新的）
   const allDataList = [
     ...bitcoinData, ...bitcoinData2,
@@ -176,24 +182,26 @@ const SportsLotteryHall: React.FC = () => {
     '4': [...caishenData, ...caishenData2], // Caishen
     '5': [...tbcData, ...tbcData2],     // TBC
   };
+  const tabGroupRef = useRef<HTMLDivElement>(null);
+  const tabItemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
     const list = {
-        all: '/icons/pajamas_earth.svg',
-        Bitcoin: '/icons/formkit_bitcoin.svg',
-        Ethereum: '/icons/picon_ethereum.svg',
-        Caishen: '/icons/token_solana.svg',
-        TBC: '/icons/Vector.svg',
+      all: '/icons/pajamas_earth.svg',
+      Bitcoin: '/icons/formkit_bitcoin.svg',
+      Ethereum: '/icons/picon_ethereum.svg',
+      Caishen: '/icons/token_solana.svg',
+      TBC: '/icons/Vector.svg',
+    }
+    const newOptions = Object.keys(list).map((item, index) => {
+      return {
+        key: index,
+        icon: list[item as keyof typeof list],
+        text: item === 'all' ? '全部' : item,
+        count: allVoteData[String(index + 1) as keyof typeof allVoteData]?.length || 0
       }
-      const newOptions = Object.keys(list).map((item,index) => {
-        return {
-          key: index,
-          icon: list[item as keyof typeof list],
-          text: item === 'all' ?  '全部' : item,
-          count: allVoteData[String(index + 1) as keyof typeof allVoteData]?.length || 0
-        }
-      }) 
-      setOptions(newOptions);
+    })
+    setOptions(newOptions);
   }, []);
 
   // 每页数据量
@@ -215,68 +223,101 @@ const SportsLotteryHall: React.FC = () => {
     });
   };
 
-  // 获取当前tab的当前页数据
-  const getCurrentPageData = () => {
+  // 获取当前tab的排序后数据
+  const getSortedData = () => {
     const allData = allVoteData[activeTab as keyof typeof allVoteData] || [];
-    // 先排序
-    const sortedData = sortVoteData(allData);
-    // 再分页
-    const start = (currentPage[activeTab] - 1) * pageSize;
-    const end = start + pageSize;
-    return sortedData.slice(start, end);
-  };
-  // 获取当前tab的总数据量
-  const getTotalCount = () => {
-    return allVoteData[activeTab as keyof typeof allVoteData]?.length || 0;
+    return sortVoteData(allData);
   };
 
   const handleTabChange = (key: string) => {
     setActiveTab(key);
+    // 滚动到选中的tab，使其居中显示
+    const tabIndex = Number(key) - 1;
+    const tabItem = tabItemRefs.current[String(tabIndex)];
+    const tabGroup = tabGroupRef.current;
+
+    if (tabItem && tabGroup) {
+      const itemOffsetLeft = tabItem.offsetLeft;
+      const itemWidth = tabItem.offsetWidth;
+      const containerWidth = tabGroup.offsetWidth;
+
+      // 计算目标滚动位置：选中项的中心点对齐容器的中心点
+      const targetScrollLeft = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+
+      tabGroup.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage({
-      ...currentPage,
-      [activeTab]: page,
-    });
-  };
+  // 初始加载时，确保选中的tab居中显示
+  useEffect(() => {
+    const tabIndex = Number(activeTab) - 1;
+    const tabItem = tabItemRefs.current[String(tabIndex)];
+    const tabGroup = tabGroupRef.current;
 
-  const currentData = getCurrentPageData();
-  const total = getTotalCount();
+    if (tabItem && tabGroup) {
+      const itemOffsetLeft = tabItem.offsetLeft;
+      const itemWidth = tabItem.offsetWidth;
+      const containerWidth = tabGroup.offsetWidth;
+
+      // 计算目标滚动位置：选中项的中心点对齐容器的中心点
+      const targetScrollLeft = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+
+      tabGroup.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  }, []); // 只在组件挂载时执行一次
 
   return (
     <div className={styles.container}>
       <div className={styles.tabCard}>
-        <div className={styles.tabGroup}>
-          {options.map((item,index) => (
-            <div className={`${styles.tabItem} ${activeTab === String(index+1) && styles.activeItem}`} key={index} onClick={() => handleTabChange(String(index+1))}>
+        <div className={styles.tabGroup} ref={tabGroupRef}>
+          {options.map((item, index) => (
+            <div
+              className={`${styles.tabItem} ${activeTab === String(index + 1) && styles.activeItem}`}
+              key={index}
+              ref={(el) => { tabItemRefs.current[String(index)] = el; }}
+              onClick={() => handleTabChange(String(index + 1))}
+            >
               <img src={item.icon} className={styles.icon} alt={item.text} />
               <div className={styles.text}>{item.text} <span>({item.count})</span></div>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.title}>{options[Number(activeTab)-1]?.text}</div>
+      <div className={styles.title}>{options[Number(activeTab) - 1]?.text}</div>
       <div className={styles.content}>
-        <div className={styles.cardList}>
-          {currentData.map((item) => (
-            item.type === 'double' ? (
-              <VoteCardDouble key={item.id} data={item} />
-            ) : (
-              <VoteCard key={item.id} data={item} />
-            )
-          ))}
-        </div>
-        <div className={styles.pagination}>
-          <Pagination
-            current={currentPage[activeTab]}
-            total={total}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            showSizeChanger={false}
-          />
-        </div>
+        <PaginationWithLoadMore
+          dataSource={getSortedData()}
+          pageSize={50}
+          mobilePageSize={20}
+          currentPage={currentPage[activeTab]}
+          onPageChange={(page) => {
+            setCurrentPage({
+              ...currentPage,
+              [activeTab]: page,
+            });
+          }}
+        >
+          {(data) => (
+            <div className={styles.cardList}>
+              {data.map((item) => (
+                item.type === 'double' ? (
+                  <VoteCardDouble key={item.id} data={item} />
+                ) : (
+                  <VoteCard key={item.id} data={item} />
+                )
+              ))}
+            </div>
+          )}
+        </PaginationWithLoadMore>
       </div>
+      <BackToTop />
     </div>
   );
 };
