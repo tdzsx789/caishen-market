@@ -1,0 +1,154 @@
+.voteCard {
+  border-radius: 14px;
+  transition: all 0.3s;
+  background: #12121A;
+  border: 1px solid #1E2939;
+  font-family: PingFang SC;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #AA0F0A66;
+    transform: translateY(-2px);
+  }
+
+  .contentRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 11.5px 0 21.5px;
+    
+    .description {
+      width: 60%;
+      color: #FFFFFF;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17.5px;
+      margin: 0;
+    }
+    
+    .chartContainer {
+      width: 40%;
+      height: 48px;
+    }
+  }
+
+  .metaInfo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8x;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    font-weight: 400;
+    font-size: 12px;
+    .betStatus{
+      color: #AA0F0A;
+      background-color: #AA0F0A33;
+      padding: 5.5px 9px;
+      border-radius: 8px;
+      margin-right: 8px;
+      border: 1px solid #AA0F0A66;
+    }
+    .InProgress{
+      background-color: #0D542B4D;
+      color: #05DF72;
+      padding: 5.5px 9px;
+      border-radius: 8px;
+      border: 1px solid #016630;
+    }
+    .isStart{
+      background-color: #1C398E4D;
+      color: #51A2FF;
+      padding: 5.5px 9px;
+      border-radius: 8px;
+      border: 1px solid #193CB8;
+    }
+    .isEnd{
+      background-color: #1E293980;
+      color: #99A1AF;
+      padding: 5.5px 9px;
+      border-radius: 8px;
+      border: 1px solid #364153;
+    }
+  }
+
+  .doubleBetButtons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    
+    .doubleButtonRed, .doubleButtonGreen {
+      flex: 1;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      
+      .text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #FFFFFF;
+        margin-bottom: 0;
+      }
+      
+      .odds {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+    
+    .doubleButtonRed {
+      background: linear-gradient(180deg, rgba(255, 77, 79, 0.2) 0%, rgba(255, 77, 79, 0.1) 100%);
+      border: 1px solid rgba(255, 77, 79, 0.5);
+      
+      &:hover {
+        background: linear-gradient(180deg, rgba(255, 77, 79, 0.3) 0%, rgba(255, 77, 79, 0.2) 100%);
+        border-color: #ff4d4f;
+      }
+    }
+    
+    .doubleButtonGreen {
+      background: #00A63E;
+      border: 1px solid #00A63E;
+      
+      &:hover {
+        background: #00b945;
+        border-color: #00b945;
+      }
+      
+      .text, .odds {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .line{
+    flex-wrap: wrap;
+    height: 1px;
+    margin: 16px auto 13px;
+    background-color: #1E2939;
+  }
+  .tradeVolume{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 12px;
+    margin-top: 8px;
+    .text{
+      color: #99A1AF;
+      img{
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+      }
+    }
+    .number{
+      color: #FFFFFF;
+    }
+  }
+}

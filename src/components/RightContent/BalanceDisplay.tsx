@@ -12,10 +12,13 @@ import mockUser from '@/mockData/users.json';
 export const BalanceDisplay: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [refreshing, setRefreshing] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const currentUser = initialState?.currentUser;
 
   // 处理连接钱包（跳转到钱包网站授权）
   const handleConnectWallet = async () => {
+     if (connecting) return;
+     setConnecting(true);
      try {
        await createAccount(mockUser);
        setInitialState((s) => ({ 
@@ -29,6 +32,8 @@ export const BalanceDisplay: React.FC = () => {
         }));
      } catch (error) {
        console.error('Failed to create account:', error);
+     } finally {
+       setConnecting(false);
      }
   };
 
@@ -82,9 +87,9 @@ export const BalanceDisplay: React.FC = () => {
             <ReloadOutlined className={styles.refreshIcon} />
           </div>
         </div>
-        <div className={styles.connectWalletButton} onClick={handleConnectWallet}>
-          <img src='/icons/Icon1.svg' alt="" />
-          <span>连接钱包</span>
+        <div className={`${styles.connectWalletButton} ${connecting ? styles.disabled : ''}`} onClick={handleConnectWallet}>
+          {connecting ? <Spin size="small" /> : <img src='/icons/Icon1.svg' alt="" />}
+          <span style={{ marginLeft: connecting ? 8 : 0 }}>{connecting ? '连接中...' : '连接钱包'}</span>
         </div>
       </div>
     );

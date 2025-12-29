@@ -206,7 +206,7 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  // baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:5260' : 'http://13.212.168.127:5260',
-  baseURL: 'http://13.212.168.127:5260',
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:5260' : 'http://13.212.168.127:5260',
+  withCredentials: true,
   ...errorConfig,
 };

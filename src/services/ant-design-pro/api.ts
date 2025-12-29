@@ -19,13 +19,14 @@ export async function currentUser(options?: { [key: string]: any }) {
     };
   }>('/api/currentUser', {
     method: 'GET',
+    credentials: 'include', // 关键：告诉浏览器发送 Cookie
     ...(options || {}),
   });
 }
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/api/outLogin', {
     method: 'POST',
     ...(options || {}),
   });

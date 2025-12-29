@@ -11,6 +11,7 @@ interface VoteOption {
 interface VoteCardProps {
   data: {
     id: number | string;
+    type?: string;
     title?: string;
     description: string;
     activityDescription?: string;

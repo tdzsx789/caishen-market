@@ -2,6 +2,7 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Tabs, Pagination } from 'antd';
 import React, { useState, useEffect } from 'react';
 import VoteCard from './components/VoteCard';
+import VoteCardDouble from './components/VoteCardDouble';
 import styles from './index.less';
 
 // 模拟投票数据
@@ -39,8 +40,9 @@ const generateCoinData = (coinName: string) => {
     
     return {
       id: `${coinName}-${index}`, // 唯一ID
+      type: 'multi',
       title: `${coinName} 价格预测 ${String(index).padStart(2, '0')}:00`,
-      description: `${coinName}价格会在${timeStr}之前到达120000美元吗？`,
+      description: `${coinName}在${timeStr}的价格会达到多少？`,
       activityDescription: `活动说明：这是一个关于${coinName}市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在${timeStr}结束，结果将在活动结束后公布。`,
       tradingVolume: parseFloat(tradingVolume),
       endTime: endTime.toISOString(),
@@ -48,11 +50,11 @@ const generateCoinData = (coinName: string) => {
       status: status as 'InProgress' | 'isStart' | 'isEnd',
       userBetStatus: Math.random() > 0.8, // 随机用户投注状态
       option1: {
-        text: '是',
+        text: '90000',
         odds: (1.5 + Math.random()).toFixed(2),
       },
       option2: {
-        text: '否',
+        text: '80000',
         odds: (1.5 + Math.random()).toFixed(2),
       },
       result: status === 'isEnd' ? {
@@ -98,17 +100,81 @@ const SportsLotteryHall: React.FC = () => {
   const ethereumData = generateCoinData('Ethereum');
   const caishenData = generateCoinData('Caishen');
   const tbcData = generateCoinData('TBC');
+
+  // 生成新的 double 类型数据
+  const generateCoinData2 = (coinName: string) => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // 生成当天24小时的数据
+    return Array.from({ length: 24 }, (_, index) => {
+      const endTime = new Date(todayStart.getTime() + (index + 1) * 60 * 60 * 1000);
+      
+      let status: 'InProgress' | 'isStart' | 'isEnd';
+      const currentHour = now.getHours();
+      
+      if (index < currentHour) {
+        status = 'isEnd';
+      } else if (index === currentHour) {
+        status = 'InProgress';
+      } else {
+        status = 'isStart';
+      }
+      
+      const timeStr = `${endTime.getFullYear()}-${String(endTime.getMonth() + 1).padStart(2, '0')}-${String(endTime.getDate()).padStart(2, '0')} ${String(endTime.getHours()).padStart(2, '0')}:00`;
+      const tradingVolume = (Math.random() * 1000000 + 10000).toFixed(2);
+      
+      // 生成 Odds
+      const odds1 = Math.floor(Math.random() * 99) + 1; // 1-99
+      const odds2 = 100 - odds1; // 100 - odds1
+
+      return {
+        id: `${coinName}-2-${index}`,
+        type: 'double',
+        title: `${coinName} 涨跌预测 ${String(index).padStart(2, '0')}:00`,
+        description: `${coinName}在${timeStr}时是涨还是跌？`,
+        activityDescription: `活动说明：这是一个关于${coinName}市场涨跌预测的投票活动。参与者可以根据市场趋势选择"涨"或"跌"，并根据赔率进行下注。活动将在${timeStr}结束，结果将在活动结束后公布。`,
+        tradingVolume: parseFloat(tradingVolume),
+        endTime: endTime.toISOString(),
+        createdAt: now.toISOString(),
+        status: status as 'InProgress' | 'isStart' | 'isEnd',
+        userBetStatus: Math.random() > 0.8,
+        option1: {
+          text: '涨',
+          odds: odds1.toString(),
+        },
+        option2: {
+          text: '跌',
+          odds: odds2.toString(),
+        },
+        result: status === 'isEnd' ? {
+          option1: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
+          option2: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
+        } : undefined,
+      };
+    });
+  };
+
+  const bitcoinData2 = generateCoinData2('Bitcoin');
+  const ethereumData2 = generateCoinData2('Ethereum');
+  const caishenData2 = generateCoinData2('Caishen');
+  const tbcData2 = generateCoinData2('TBC');
   
-  // 汇总所有数据
-  const allDataList = [...bitcoinData, ...ethereumData, ...caishenData, ...tbcData];
+  // 汇总所有数据（合并原来的和新的）
+  const allDataList = [
+    ...bitcoinData, ...bitcoinData2,
+    ...ethereumData, ...ethereumData2,
+    ...caishenData, ...caishenData2,
+    ...tbcData, ...tbcData2
+  ];
 
   // 每个tab的数据
   const allVoteData = {
     '1': allDataList, // 全部
-    '2': bitcoinData, // Bitcoin
-    '3': ethereumData, // Ethereum
-    '4': caishenData, // Caishen
-    '5': tbcData,     // TBC
+    '2': [...bitcoinData, ...bitcoinData2], // Bitcoin
+    '3': [...ethereumData, ...ethereumData2], // Ethereum
+    '4': [...caishenData, ...caishenData2], // Caishen
+    '5': [...tbcData, ...tbcData2],     // TBC
   };
 
   useEffect(() => {
@@ -194,7 +260,11 @@ const SportsLotteryHall: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.cardList}>
           {currentData.map((item) => (
-            <VoteCard key={item.id} data={item} />
+            item.type === 'double' ? (
+              <VoteCardDouble key={item.id} data={item} />
+            ) : (
+              <VoteCard key={item.id} data={item} />
+            )
           ))}
         </div>
         <div className={styles.pagination}>
