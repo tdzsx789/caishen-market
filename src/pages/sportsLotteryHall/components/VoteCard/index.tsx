@@ -8,9 +8,17 @@ interface VoteOption {
   odds: string;
 }
 
+interface MultipleOption {
+  name: string;
+  tradingVolume?: number;
+  chance?: number;
+  price?: number;
+}
+
 interface VoteCardProps {
   data: {
     id: number | string;
+    subType?: string;
     type?: string;
     title?: string;
     description: string;
@@ -19,8 +27,9 @@ interface VoteCardProps {
     endTime: string; // 结束时间
     status: 'InProgress' | 'isStart' | 'isEnd'; // 状态
     userBetStatus: boolean; // 用户投注状态
-    option1: VoteOption;
-    option2: VoteOption;
+    option1?: VoteOption;
+    option2?: VoteOption;
+    options?: MultipleOption[];
     result?: {
       option1: 'yes' | 'no' | null;
       option2: 'yes' | 'no' | null;
@@ -41,6 +50,13 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
     isStart: '即将开始',
     isEnd: '已结束'
   }
+
+  const renderName = (name: string) => {
+    if (name.includes('以上')) return `↑ ${name}`;
+    if (name.includes('以下')) return `↓ ${name}`;
+    return name;
+  };
+
   return (
     <Card className={styles.voteCard} onClick={handleCardClick}>
       <div className={styles.metaInfo}>
@@ -51,22 +67,47 @@ const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
       </div>
       <div className={styles.description}>{data.description}</div>
       <div className={styles.betButtons}>
-        <div className={styles.betOption}>
-          <div className={styles.optionText}>{data.option1.text}</div>
-          <div className={styles.optionOdds}>赔率: {data.option1.odds}</div>
-          <Space className={styles.buttonGroup}>
-            <div className={styles.yesButton}>是</div>
-            <div className={styles.NoButton}> 否</div>
-          </Space>
-        </div>
-        <div className={styles.betOption}>
-          <div className={styles.optionText}>{data.option2.text}</div>
-          <div className={styles.optionOdds}>赔率: {data.option2.odds}</div>
-          <Space className={styles.buttonGroup}>
-            <div className={styles.yesButton}>是</div>
-            <div className={styles.NoButton}> 否</div>
-          </Space>
-        </div>
+        {data.subType === 'multiple' && data.options ? (
+          <>
+            {[...data.options]
+              .sort((a, b) => (b.tradingVolume || 0) - (a.tradingVolume || 0))
+              .slice(0, 2)
+              .map((opt, idx) => (
+                <div key={idx} className={styles.betOption}>
+                  <div className={styles.optionText}>{renderName(opt.name)}</div>
+                  <div className={styles.optionOdds}>{opt.price}%</div>
+                  <Space className={styles.buttonGroup}>
+                    <div className={styles.btnYesDouble}>是</div>
+                    <div className={styles.btnNoDouble}>否</div>
+                  </Space>
+                </div>
+              ))}
+            {data.options.length > 2 && (
+              <div className={styles.moreOptions}>
+                +{data.options.length - 2}个选项
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className={styles.betOption}>
+              <div className={styles.optionText}>{data.option1?.text}</div>
+              <div className={styles.optionOdds}>赔率: {data.option1?.odds}</div>
+              <Space className={styles.buttonGroup}>
+                <div className={styles.yesButton}>是</div>
+                <div className={styles.NoButton}> 否</div>
+              </Space>
+            </div>
+            <div className={styles.betOption}>
+              <div className={styles.optionText}>{data.option2?.text}</div>
+              <div className={styles.optionOdds}>赔率: {data.option2?.odds}</div>
+              <Space className={styles.buttonGroup}>
+                <div className={styles.yesButton}>是</div>
+                <div className={styles.NoButton}> 否</div>
+              </Space>
+            </div>
+          </>
+        )}
       </div>
       <div className={styles.line}></div>
       <div className={styles.infoRow}>

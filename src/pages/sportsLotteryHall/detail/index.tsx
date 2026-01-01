@@ -28,11 +28,13 @@ interface BetRecord {
 
 interface VoteData {
   id: number | string;
+  subType?: string;
   title: string;
   description: string;
   activityDescription: string; // 活动说明
-  option1: VoteOption;
-  option2: VoteOption;
+  option1?: VoteOption;
+  option2?: VoteOption;
+  options?: any[];
   tradingVolume: number; // 总交易量
   endTime: string; // 截止日期
   status: 'InProgress' | 'isStart' | 'isEnd';
@@ -174,8 +176,8 @@ const VoteDetail: React.FC = () => {
     
     // 这里应该调用实际的API来提交投注
     // 模拟投注成功
-    const optionText = currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text;
-    const odds = currentBet.option === 'option1' ? voteData.option1.odds : voteData.option2.odds;
+    const optionText = currentBet.option === 'option1' ? voteData.option1?.text : voteData.option2?.text;
+    const odds = currentBet.option === 'option1' ? voteData.option1?.odds : voteData.option2?.odds;
     
     // 更新投注金额记录
     setBetAmounts(prev => ({
@@ -189,10 +191,10 @@ const VoteDetail: React.FC = () => {
     // 添加投注记录
     const newBetRecord: BetRecord = {
       id: Date.now(),
-      option: optionText,
+      option: optionText || '',
       choice: currentBet.choice,
       amount: currentBet.amount,
-      odds: odds,
+      odds: odds || '',
       time: new Date().toISOString(),
       status: 'pending',
     };
@@ -212,7 +214,7 @@ const VoteDetail: React.FC = () => {
   // 计算中奖金额
   const calculateWinnings = (): number => {
     if (!currentBet.amount || !currentBet.option) return 0;
-    const odds = currentBet.option === 'option1' ? parseFloat(voteData.option1.odds) : parseFloat(voteData.option2.odds);
+    const odds = currentBet.option === 'option1' ? parseFloat(voteData.option1?.odds || '0') : parseFloat(voteData.option2?.odds || '0');
     return currentBet.amount * odds;
   };
 
@@ -220,7 +222,8 @@ const VoteDetail: React.FC = () => {
   const getPredictionValue = (): string => {
     if (!currentBet.option) return '';
     // 根据选择的选项返回对应的显示值
-    const optionText = currentBet.option === 'option1' ? voteData.option1.text : voteData.option2.text;
+    const optionText = currentBet.option === 'option1' ? voteData.option1?.text : voteData.option2?.text;
+    if (!optionText) return '';
     // 提取数字部分，例如 "↑ 1,000,000" -> "1,000,000"
     const match = optionText.match(/[\d,]+/);
     return match ? match[0] : optionText;
@@ -261,11 +264,86 @@ const VoteDetail: React.FC = () => {
 
   console.log('!currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0', !currentBet.option || !currentBet.choice || !currentBet.amount || currentBet.amount <= 0)
 
-  return (
-    <div className={styles.container}>
-      <PageBack title={'返回首页平台'} />
-      <div className={styles.detailCard}>
-        <div>
+  const renderLeftContent = () => {
+    if (voteData.subType === 'multiple' && voteData.options) {
+      return (
+        <div className={styles.leftWrap}>
+          <Card className={`${styles.CardBg} ${styles.statusCard}`}>
+            <div className={styles.description}>{voteData.description}</div>
+            <div className={`${styles.statusTag} ${statusInfo.className}`}>
+              {statusInfo.text}
+            </div>
+            
+            {['InProgress','isStart'].includes(voteData.status) && (
+              <div className={styles.multipleOptionsCard} style={{ marginBottom: 20 }}>
+                <div className={styles.forecastResultsTitle}>选择预测结果</div>
+                <div className={styles.multipleOptionsList}>
+                  {[...voteData.options]
+                    .sort((a, b) => (b.tradingVolume || 0) - (a.tradingVolume || 0))
+                    .map((opt, idx) => (
+                      <div key={idx} className={styles.multipleOptionItem}>
+                        <div className={styles.optionText}>{opt.name.includes('以上') ? `↑ ${opt.name}` : opt.name.includes('以下') ? `↓ ${opt.name}` : opt.name}</div>
+                        <div className={styles.optionOdds}>概率: {opt.price}%</div>
+                        <Space className={styles.buttonGroup}>
+                          <div 
+                            className={styles.btnYesDouble}
+                            onClick={() => {
+                              // 模拟设置当前选项
+                              setCurrentBet({ 
+                                option: 'option1', // 暂时复用option1字段作为标识
+                                choice: 'yes',
+                                amount: 0 
+                              });
+                            }}
+                          >
+                            是
+                          </div>
+                          <div 
+                            className={styles.btnNoDouble}
+                            onClick={() => {
+                               setCurrentBet({ 
+                                option: 'option1',
+                                choice: 'no',
+                                amount: 0 
+                              });
+                            }}
+                          >
+                            否
+                          </div>
+                        </Space>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className={styles.tradeInfo}>
+              <div className={styles.tradeItem}>
+                <div className={styles.label}>总交易量</div>
+                <div className={styles.value}>${voteData.tradingVolume.toLocaleString()}</div>
+              </div>
+              <div className={styles.tradeItem}>
+                <div className={styles.label}>截止日期</div>
+                <div className={styles.value}>{new Date(voteData.endTime).toLocaleString('zh-CN')}</div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className={`${styles.CardBg} ${styles.statusCard}`}>
+            <div className={styles.activityTitle}>活动说明</div>
+            <div className={styles.activityDescription}>
+              {voteData.activityDescription}
+            </div>
+          </Card>
+
+          {renderUserBetRecords()}
+        </div>
+      );
+    }
+
+    // Default guess layout
+    return (
+      <div className={styles.leftWrap}>
           <Card className={`${styles.CardBg} ${styles.statusCard}`}>
             <div className={styles.description}>{voteData.description}</div>
             <div className={`${styles.statusTag} ${statusInfo.className}`}>
@@ -294,8 +372,8 @@ const VoteDetail: React.FC = () => {
               </div>
               <div className={styles.line}></div>
               <div className={styles.tableTR}>
-                <div className={styles.tableTRItem1}>{voteData.option1.text}</div>
-                <div className={styles.tableTRItem2}>{voteData.option1.odds}</div>
+                <div className={styles.tableTRItem1}>{voteData.option1?.text}</div>
+                <div className={styles.tableTRItem2}>{voteData.option1?.odds}</div>
                 <div className={`${styles.tableTRItem}`}>
                   <div className={styles.yewBtn} onClick={() => handleBetClick('option1', 'yes')}>{betAmounts.option1.yes}¢</div>
                 </div>
@@ -304,8 +382,8 @@ const VoteDetail: React.FC = () => {
                 </div>
               </div>
               <div className={styles.tableTR}>
-                <div className={styles.tableTRItem1}>{voteData.option2.text}</div>
-                <div className={styles.tableTRItem2}>{voteData.option2.odds}</div>
+                <div className={styles.tableTRItem1}>{voteData.option2?.text}</div>
+                <div className={styles.tableTRItem2}>{voteData.option2?.odds}</div>
                 <div className={`${styles.tableTRItem}`}>
                   <div className={styles.yewBtn} onClick={() => handleBetClick('option2', 'yes')}>{betAmounts.option2.yes}¢</div>
                 </div>
@@ -323,7 +401,15 @@ const VoteDetail: React.FC = () => {
             </div>
           </Card>
           {/* 个人投注记录（进行中和已结束时显示，即将开始时不显示） */}
-          {voteData.status !== 'isStart' && userBetRecords.length > 0 && <Card className={`${styles.CardBg} ${styles.statusCard} ${styles.betSectionCard}`} >
+          {renderUserBetRecords()}
+        </div>
+    );
+  };
+
+  const renderUserBetRecords = () => {
+    if (voteData.status !== 'isStart' && userBetRecords.length > 0) {
+      return (
+        <Card className={`${styles.CardBg} ${styles.statusCard} ${styles.betSectionCard}`} >
             <div className={styles.betSectionTitle}>
               个人投注记录
               <div className={styles.viewMore} onClick={handleGoToOrders}>查看更多
@@ -331,6 +417,7 @@ const VoteDetail: React.FC = () => {
               </div>
             </div>
             <div className={styles.betSectionGroup}>
+              {/* Mock records - in real app map through userBetRecords */}
               <div className={styles.betSectionItem}>
                 <div>
                   <div className={styles.label}>以 0.44 价格投注了$15.25    900,000“是”</div>
@@ -352,8 +439,17 @@ const VoteDetail: React.FC = () => {
                 </div>
               </div>
             </div>
-          </Card>}
-        </div>
+          </Card>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div className={styles.container}>
+      <PageBack title={'返回首页平台'} />
+      <div className={styles.detailCard}>
+        {renderLeftContent()}
         <div className={styles.bettingStatusCard}>
           {voteData.status !== 'isEnd' ?<Card className={`${styles.CardBg} ${styles.bettingResult}`}>
             <div className={styles.amountSection}>

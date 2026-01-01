@@ -74,10 +74,39 @@
     line-height: 32px;
     display: flex;
     align-items: center;
-    .icon{ 
-      width: 23px;
-      height: 23px;
-      margin-right: 10px;
+    justify-content: space-between;
+
+    .titleLeft {
+      display: flex;
+      align-items: center;
+      .icon{ 
+        width: 23px;
+        height: 23px;
+        margin-right: 10px;
+      }
+    }
+
+    .timeFilter {
+      display: flex;
+      gap: 10px;
+      
+      .filterItem {
+        padding: 4px 12px;
+        border-radius: 14px;
+        font-size: 14px;
+        color: #99A1AF;
+        cursor: pointer;
+        transition: all 0.3s;
+        
+        &:hover {
+          color: #FFFFFF;
+        }
+        
+        &.activeFilter {
+          color: #FFFFFF;
+          background: #2B3441;
+        }
+      }
     }
   }
 }

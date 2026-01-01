@@ -40,7 +40,7 @@ const generateCoinData = (coinName: string) => {
 
     return {
       id: `${coinName}-${index}`, // 唯一ID
-      type: 'multi',
+      subType: 'multi',
       title: `${coinName} 价格预测 ${String(index).padStart(2, '0')}:00`,
       description: `${coinName}在${timeStr}的价格会达到多少？`,
       activityDescription: `活动说明：这是一个关于${coinName}市场预测的投票活动。参与者可以根据市场趋势选择"是"或"否"，并根据赔率进行下注。活动将在${timeStr}结束，结果将在活动结束后公布。`,
@@ -100,116 +100,117 @@ const SportsLotteryHall: React.FC = () => {
     '5': 1,
   });
   const [options, setOptions] = useState<any[]>([]);
+  const [timeFilter, setTimeFilter] = useState<string>('all');
+  const [allCards, setAllCards] = useState<any[]>([]);
 
-  // 生成各币种数据
-  const bitcoinData = generateCoinData('Bitcoin');
-  const ethereumData = generateCoinData('Ethereum');
-  const caishenData = generateCoinData('Caishen');
-  const tbcData = generateCoinData('TBC');
-
-  // 生成新的 double 类型数据
-  const generateCoinData2 = (coinName: string) => {
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    // 生成当天24小时的数据
-    return Array.from({ length: 24 }, (_, index) => {
-      const endTime = new Date(todayStart.getTime() + (index + 1) * 60 * 60 * 1000);
-
-      let status: 'InProgress' | 'isStart' | 'isEnd';
-      const currentHour = now.getHours();
-
-      if (index < currentHour) {
-        status = 'isEnd';
-      } else if (index === currentHour) {
-        status = 'InProgress';
-      } else {
-        status = 'isStart';
-      }
-
-      const timeStr = `${endTime.getFullYear()}-${String(endTime.getMonth() + 1).padStart(2, '0')}-${String(endTime.getDate()).padStart(2, '0')} ${String(endTime.getHours()).padStart(2, '0')}:00`;
-      const tradingVolume = (Math.random() * 1000000 + 10000).toFixed(2);
-
-      // 生成 Odds
-      const odds1 = Math.floor(Math.random() * 99) + 1; // 1-99
-      const odds2 = 100 - odds1; // 100 - odds1
-
-      return {
-        id: `${coinName}-2-${index}`,
-        type: 'double',
-        title: `${coinName} 涨跌预测 ${String(index).padStart(2, '0')}:00`,
-        description: `${coinName}在${timeStr}时是涨还是跌？`,
-        activityDescription: `活动说明：这是一个关于${coinName}市场涨跌预测的投票活动。参与者可以根据市场趋势选择"涨"或"跌"，并根据赔率进行下注。活动将在${timeStr}结束，结果将在活动结束后公布。`,
-        tradingVolume: parseFloat(tradingVolume),
-        endTime: endTime.toISOString(),
-        createdAt: now.toISOString(),
-        status: status as 'InProgress' | 'isStart' | 'isEnd',
-        userBetStatus: Math.random() > 0.8,
-        option1: {
-          text: '涨',
-          odds: odds1.toString(),
-        },
-        option2: {
-          text: '跌',
-          odds: odds2.toString(),
-        },
-        result: status === 'isEnd' ? {
-          option1: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
-          option2: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
-        } : undefined,
-      };
-    });
-  };
-
-  const bitcoinData2 = generateCoinData2('Bitcoin');
-  const ethereumData2 = generateCoinData2('Ethereum');
-  const caishenData2 = generateCoinData2('Caishen');
-  const tbcData2 = generateCoinData2('TBC');
-
-  // 汇总所有数据（合并原来的和新的）
-  const allDataList = [
-    ...bitcoinData, ...bitcoinData2,
-    ...ethereumData, ...ethereumData2,
-    ...caishenData, ...caishenData2,
-    ...tbcData, ...tbcData2
+  const timeOptions = [
+    { label: '全部', value: 'all' },
+    { label: '小时', value: 'hour' },
+    { label: '天', value: 'day' },
+    { label: '月', value: 'month' },
+    { label: '年', value: 'year' },
   ];
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5260/api/cards?periodType=${timeFilter}`);
+        if (response.ok) {
+          const data = await response.json();
+          const mappedData = data.map((item: any) => {
+            const now = new Date();
+            const endTime = new Date(item.endTime);
+            let status: 'InProgress' | 'isStart' | 'isEnd';
+            
+            const startTime = new Date(item.startTime);
+            const currentTime = now.getTime();
+            const startTimeMs = startTime.getTime();
+            const endTimeMs = endTime.getTime();
+
+            if (currentTime >= endTimeMs) {
+                status = 'isEnd';
+            } else if (currentTime >= startTimeMs && currentTime < endTimeMs) {
+                status = 'InProgress';
+            } else {
+                status = 'isStart';
+            }
+
+            let coinName = item.category;
+            if (coinName === 'BitBitcoin') coinName = 'Bitcoin';
+
+            // Base object
+            const baseObj = {
+              id: item.id,
+              subType: item.subType || 'guess', // Default to guess if missing
+              title: item.title,
+              description: item.description,
+              activityDescription: item.activityDescription,
+              tradingVolume: item.tradingVolume,
+              endTime: item.endTime,
+              createdAt: item.startTime,
+              status: status,
+              userBetStatus: Math.random() > 0.8,
+              coinName: coinName
+            };
+
+            if (item.subType === 'multiple') {
+              return {
+                ...baseObj,
+                options: item.options || [],
+              };
+            } else {
+              // guess type logic
+              const rise = item.rise || 0;
+              const fall = item.fall || 0;
+              
+              return {
+                ...baseObj,
+                rise,
+                fall,
+                option1: {
+                  text: '涨',
+                  odds: rise.toString(),
+                },
+                option2: {
+                  text: '跌',
+                  odds: fall.toString(),
+                },
+                result: status === 'isEnd' ? {
+                  option1: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
+                  option2: (Math.random() > 0.5 ? 'yes' : 'no') as 'yes' | 'no' | null,
+                } : undefined,
+              };
+            }
+          });
+          setAllCards(mappedData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchAllData();
+  }, [timeFilter]);
+
+  // Filter data for specific tabs
+  const bitcoinData = allCards.filter(d => d.coinName === 'Bitcoin');
+  const ethereumData = allCards.filter(d => d.coinName === 'Ethereum');
+  const caishenData = allCards.filter(d => d.coinName === 'Caishen');
+  const tbcData = allCards.filter(d => d.coinName === 'TBC');
 
   // 每个tab的数据
   const allVoteData = {
-    '1': allDataList, // 全部
-    '2': [...bitcoinData, ...bitcoinData2], // Bitcoin
-    '3': [...ethereumData, ...ethereumData2], // Ethereum
-    '4': [...caishenData, ...caishenData2], // Caishen
-    '5': [...tbcData, ...tbcData2],     // TBC
+    '1': allCards, // 全部
+    '2': bitcoinData, // Bitcoin
+    '3': ethereumData, // Ethereum
+    '4': caishenData, // Caishen
+    '5': tbcData,     // TBC
   };
   const tabGroupRef = useRef<HTMLDivElement>(null);
   const tabItemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  useEffect(() => {
-    const list = {
-      all: '/icons/pajamas_earth.svg',
-      Bitcoin: '/icons/formkit_bitcoin.svg',
-      Ethereum: '/icons/picon_ethereum.svg',
-      Caishen: '/icons/token_solana.svg',
-      TBC: '/icons/Vector.svg',
-    }
-    const newOptions = Object.keys(list).map((item, index) => {
-      return {
-        key: index,
-        icon: list[item as keyof typeof list],
-        text: item === 'all' ? '全部' : item,
-        count: allVoteData[String(index + 1) as keyof typeof allVoteData]?.length || 0
-      }
-    })
-    setOptions(newOptions);
-  }, []);
-
-  // 每页数据量
-  const pageSize = 20; // 调整每页显示数量，因为数据量变少了（每组24个）
-
   // 排序函数：进行中 > 未开始 > 已结束；同状态下按创建时间降序
-  const sortVoteData = (data: typeof allVoteData['1']) => {
-    const statusOrder = { InProgress: 1, isStart: 2, isEnd: 3 };
+  const sortVoteData = (data: any[]) => {
+    const statusOrder: { [key: string]: number } = { InProgress: 1, isStart: 2, isEnd: 3 };
     return [...data].sort((a, b) => {
       // 先按状态排序
       const statusDiff = (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
@@ -273,6 +274,25 @@ const SportsLotteryHall: React.FC = () => {
     }
   }, []); // 只在组件挂载时执行一次
 
+  useEffect(() => {
+    const list = {
+      all: '/icons/pajamas_earth.svg',
+      Bitcoin: '/icons/formkit_bitcoin.svg',
+      Ethereum: '/icons/picon_ethereum.svg',
+      Caishen: '/icons/token_solana.svg',
+      TBC: '/icons/Vector.svg',
+    }
+    const newOptions = Object.keys(list).map((item, index) => {
+      return {
+        key: index,
+        icon: list[item as keyof typeof list],
+        text: item === 'all' ? '全部' : item,
+        count: allVoteData[String(index + 1) as keyof typeof allVoteData]?.length || 0
+      }
+    })
+    setOptions(newOptions);
+  }, [allCards]); // Update options when allCards changes
+
   return (
     <div className={styles.container}>
       <div className={styles.tabCard}>
@@ -291,8 +311,21 @@ const SportsLotteryHall: React.FC = () => {
         </div>
       </div>
       <div className={styles.title}>
-        <img src={options[Number(activeTab)-1]?.icon} className={styles.icon} alt={options[Number(activeTab)-1]?.text} />
-        {options[Number(activeTab)-1]?.text}
+        <div className={styles.titleLeft}>
+          <img src={options[Number(activeTab)-1]?.icon} className={styles.icon} alt={options[Number(activeTab)-1]?.text} />
+          {options[Number(activeTab)-1]?.text}
+        </div>
+        <div className={styles.timeFilter}>
+          {timeOptions.map((option) => (
+            <div
+              key={option.value}
+              className={`${styles.filterItem} ${timeFilter === option.value ? styles.activeFilter : ''}`}
+              onClick={() => setTimeFilter(option.value)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
       </div>
       <div className={styles.content}>
         <PaginationWithLoadMore
@@ -310,7 +343,7 @@ const SportsLotteryHall: React.FC = () => {
           {(data) => (
             <div className={styles.cardList}>
               {data.map((item) => (
-                item.type === 'double' ? (
+                item.subType === 'guess' ? (
                   <VoteCardDouble key={item.id} data={item} />
                 ) : (
                   <VoteCard key={item.id} data={item} />
