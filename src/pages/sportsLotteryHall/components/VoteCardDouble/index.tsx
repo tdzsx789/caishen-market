@@ -22,6 +22,8 @@ interface VoteCardDoubleProps {
     userBetStatus: boolean; // 用户投注状态
     option1: VoteOption;
     option2: VoteOption;
+    rise?: number;
+    fall?: number;
     result?: {
       option1: 'yes' | 'no' | null;
       option2: 'yes' | 'no' | null;
@@ -46,8 +48,8 @@ const VoteCardDouble: React.FC<VoteCardDoubleProps> = ({ data }) => {
         chartInstance.current = echarts.init(chartRef.current);
       }
 
-      const upOdds = parseFloat(data.option1.odds);
-      const downOdds = parseFloat(data.option2.odds);
+      const upOdds = data.rise !== undefined ? data.rise : parseFloat(data.option1.odds);
+      const downOdds = data.fall !== undefined ? data.fall : parseFloat(data.option2.odds);
       const total = upOdds + downOdds;
       const upRatio = total > 0 ? upOdds / total : 0.5;
       const downRatio = total > 0 ? downOdds / total : 0.5;
@@ -107,7 +109,7 @@ const VoteCardDouble: React.FC<VoteCardDoubleProps> = ({ data }) => {
       chartInstance.current?.dispose();
       chartInstance.current = null;
     };
-  }, [data.option1.odds, data.option2.odds]);
+  }, [data.option1.odds, data.option2.odds, data.rise, data.fall]);
   
   const statusList ={
     InProgress: '进行中',
@@ -131,11 +133,11 @@ const VoteCardDouble: React.FC<VoteCardDoubleProps> = ({ data }) => {
       <div className={styles.doubleBetButtons}>
         <div className={styles.doubleButtonGreen}>
           <div className={styles.text}>涨</div>
-          <div className={styles.odds}>{data.option1.odds}</div>
+          <div className={styles.odds}>{data.rise !== undefined ? data.rise : data.option1.odds}</div>
         </div>
         <div className={styles.doubleButtonRed}>
           <div className={styles.text}>跌</div>
-          <div className={styles.odds}>{data.option2.odds}</div>
+          <div className={styles.odds}>{data.fall !== undefined ? data.fall : data.option2.odds}</div>
         </div>
       </div>
       <div className={styles.line}></div>
