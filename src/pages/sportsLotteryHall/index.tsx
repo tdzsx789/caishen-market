@@ -290,7 +290,10 @@ const SportsLotteryHall: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className={styles.title}>{options[Number(activeTab) - 1]?.text}</div>
+      <div className={styles.title}>
+        <img src={options[Number(activeTab)-1]?.icon} className={styles.icon} alt={options[Number(activeTab)-1]?.text} />
+        {options[Number(activeTab)-1]?.text}
+      </div>
       <div className={styles.content}>
         <PaginationWithLoadMore
           dataSource={getSortedData()}
