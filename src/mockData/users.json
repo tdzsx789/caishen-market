@@ -2,5 +2,8 @@
   "name": "Acount1",
   "avatar": "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
   "id": "0000000001",
-  "balance": 10000
+  "balance": 10000,
+  "total_bets": 0,
+  "total_income": 0,
+  "win_rate": 0
 }

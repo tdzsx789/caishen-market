@@ -18,6 +18,9 @@ declare namespace API {
     country?: string;
     access?: string;
     balance?: number; // 账户余额/积分
+    total_bets?: number;
+    total_income?: number;
+    win_rate?: number;
     geographic?: {
       province?: { label?: string; key?: string };
       city?: { label?: string; key?: string };

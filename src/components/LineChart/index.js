@@ -86,25 +86,25 @@ const App = memo(function App({ code, coinName }) {
   const [currentTime, setCurrentTime] = useState({ h: '--', m: '--', s: '--' });
 
   // Update time every second
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      // Convert to Beijing Time (UTC+8)
-      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      const beijingTime = new Date(utc + (3600000 * 8));
+  // useEffect(() => {
+  //   const updateTime = () => {
+  //     const now = new Date();
+  //     // Convert to Beijing Time (UTC+8)
+  //     const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  //     const beijingTime = new Date(utc + (3600000 * 8));
       
-      const pad = (n) => n < 10 ? '0' + n : n;
-      setCurrentTime({
-        h: pad(beijingTime.getHours()),
-        m: pad(beijingTime.getMinutes()),
-        s: pad(beijingTime.getSeconds())
-      });
-    };
+  //     const pad = (n) => n < 10 ? '0' + n : n;
+  //     setCurrentTime({
+  //       h: pad(beijingTime.getHours()),
+  //       m: pad(beijingTime.getMinutes()),
+  //       s: pad(beijingTime.getSeconds())
+  //     });
+  //   };
     
-    updateTime(); // Initial call
-    const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  //   updateTime(); // Initial call
+  //   const timer = setInterval(updateTime, 1000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   // Sync ref with data1
   useEffect(() => {
@@ -192,11 +192,16 @@ const App = memo(function App({ code, coinName }) {
   useEffect(() => {
     let interval;
     const fetchData = async () => {
-      if (!coinName) return;
+      console.log('coinName', coinName)
+      if (!coinName) {
+        console.log('LineChart: No coinName provided');
+        return;
+      }
 
       // Check if we have a direct mapping first (optimization)
       if (tikerObj[coinName]) {
         const ticker = tikerObj[coinName];
+        console.log(`LineChart: Fetching data for ${coinName} (${ticker})`);
         getData(ticker);
         get1MinData(ticker);
         
@@ -204,6 +209,8 @@ const App = memo(function App({ code, coinName }) {
             getData(ticker);
         }, 2000);
         return;
+      } else {
+        console.log(`LineChart: No ticker mapping found for ${coinName}`);
       }
     };
 
@@ -238,7 +245,7 @@ const App = memo(function App({ code, coinName }) {
           </div>
         </div>
         
-        <div className={styles.timeContainer}>
+        {/* <div className={styles.timeContainer}>
             <div className={styles.timeBlock}>
                 <div className={styles.timeValue}>{currentTime.h}</div>
                 <div className={styles.timeLabel}>时</div>
@@ -251,7 +258,7 @@ const App = memo(function App({ code, coinName }) {
                 <div className={styles.timeValue}>{currentTime.s}</div>
                 <div className={styles.timeLabel}>秒</div>
             </div>
-        </div>
+        </div> */}
       </div>
       <div className={styles.chart1} ref={ref1}></div>
     </div>

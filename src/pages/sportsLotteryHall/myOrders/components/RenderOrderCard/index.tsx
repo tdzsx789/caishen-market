@@ -33,7 +33,7 @@ interface OrderRecord {
             </div>
           </div>
           <div className={styles.optionItem}>
-            <div className={styles.choice}>{order.choice}</div>
+            <div className={`${styles.choice} ${order.choice === '涨' ? styles.rise : (order.choice === '跌' ? styles.fall : '')}`}>{order.choice}</div>
             {order.option}
           </div>
         </div>

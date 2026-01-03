@@ -59,13 +59,18 @@ declare namespace API {
   };
 
   type Order = {
-    id?: number;
-    petId?: number;
+    id?: number | string;
+    petId?: number | string;
     quantity?: number;
     shipDate?: string;
     /** Order Status */
     status?: 'placed' | 'approved' | 'delivered';
     complete?: boolean;
+    category?: string;
+    currency?: string;
+    type?: string;
+    price?: number;
+    income?: number;
   };
 
   type Pet = {

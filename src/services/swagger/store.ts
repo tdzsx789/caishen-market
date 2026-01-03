@@ -12,7 +12,7 @@ export async function getInventory(options?: { [key: string]: any }) {
 
 /** Place an order for a pet POST /store/order */
 export async function placeOrder(body: API.Order, options?: { [key: string]: any }) {
-  return request<API.Order>('/store/order', {
+  return request<API.Order>('/api/order', {
     method: 'POST',
     data: body,
     ...(options || {}),

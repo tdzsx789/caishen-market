@@ -18,6 +18,7 @@ interface MultipleOption {
 interface VoteCardProps {
   data: {
     id: number | string;
+    _id?: string;
     subType?: string;
     type?: string;
     title?: string;
@@ -39,9 +40,11 @@ interface VoteCardProps {
 
 const VoteCard: React.FC<VoteCardProps> = ({ data }) => {
   const handleCardClick = () => {
+    // 优先使用 _id (Mongo ObjectId) 作为 URL 参数
+    const targetId = data._id || data.id;
     // 通过 state 传递数据到详情页
     history.push({
-      pathname: `/SportsLotteryHall/detail/${data.id}`,
+      pathname: `/SportsLotteryHall/detail/${targetId}`,
     }, data);
   };
   

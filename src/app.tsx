@@ -161,13 +161,12 @@ export const layout: RunTimeLayoutConfig = ({
     avatarProps: undefined,
     onPageChange: () => {
       const { location } = history;
-      // 定义需要登录才能访问的页面
-      const protectedPaths = ['/SportsLotteryHall/myOrders', '/SportsLotteryHall/expense'];
-      const isProtectedPath = protectedPaths.some(path => location.pathname.startsWith(path));
-      // 只有在访问需要登录的页面且未登录时，才重定向到登录页
-      if (!initialState?.currentUser && isProtectedPath && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
+      // 移除登录重定向逻辑，允许在未登录状态下刷新页面
+      // const protectedPaths = ['/SportsLotteryHall/myOrders', '/SportsLotteryHall/expense'];
+      // const isProtectedPath = protectedPaths.some(path => location.pathname.startsWith(path));
+      // if (!initialState?.currentUser && isProtectedPath && location.pathname !== loginPath) {
+      //   history.push(loginPath);
+      // }
     },
     menuRender: false, // 隐藏菜单栏
     childrenRender: (children) => {

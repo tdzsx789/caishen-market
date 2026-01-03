@@ -54,6 +54,38 @@
         grid-template-columns: 1fr;
       }
     }
+  .currencyTabGroup{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 24px;
+    .tabItem{
+      padding: 7px 11px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .icon{ 
+        width: 20px;
+        height: 20px;
+      }
+      .text{
+        font-weight: 500;
+        font-size: 16px;
+        color: #99A1AF;
+        margin-left: 8px;
+        white-space: pre-line;
+      }
+    }
+    .activeItem{
+      background-color: #AA0F0A;
+      .text{
+        font-weight: bolder;
+        color: #FFFFFF;
+      }
+    }
+  }
   .tabGroup{
     margin: 25px 0 21px;
     display: flex;
@@ -98,35 +130,5 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 24px;
-  }
-}
-
-
-@media (max-width: 480px) {
-  .container{
-    width: 90vw !important;
-  }
-  .title{
-    font-size: 20px !important;
-    line-height: 24px;
-  }
-  .stateRow{
-    margin-bottom: 0 !important;
-  }
-   .tabGroup{
-    margin: 18px 0 !important;
-    display: flex;
-    .tabItem{
-      padding: 16px !important;
-    }
-    .activeItem{
-      background-color: #AA0F0A;
-      border: none;
-      color: #FFFFFF;
-      .num{
-        background-color: #FFFFFF33;
-      }
-    }
   }
 }

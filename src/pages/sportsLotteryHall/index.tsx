@@ -141,6 +141,7 @@ const SportsLotteryHall: React.FC = () => {
             // Base object
             const baseObj = {
               id: item.id,
+              _id: item._id, // Pass _id from backend
               subType: item.subType || 'guess', // Default to guess if missing
               title: item.title,
               description: item.description,
@@ -211,12 +212,24 @@ const SportsLotteryHall: React.FC = () => {
   // 排序函数：进行中 > 未开始 > 已结束；同状态下按创建时间降序
   const sortVoteData = (data: any[]) => {
     const statusOrder: { [key: string]: number } = { InProgress: 1, isStart: 2, isEnd: 3 };
+    const coinRank: { [key: string]: number } = { Bitcoin: 1, Ethereum: 2, default: 3 };
+
     return [...data].sort((a, b) => {
       // 先按状态排序
       const statusDiff = (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
       if (statusDiff !== 0) {
         return statusDiff;
       }
+
+      // 如果都是进行中状态，优先展示 Bitcoin 和 Ethereum
+      if (a.status === 'InProgress' && b.status === 'InProgress') {
+        const aCoinRank = coinRank[a.coinName as keyof typeof coinRank] || coinRank.default;
+        const bCoinRank = coinRank[b.coinName as keyof typeof coinRank] || coinRank.default;
+        if (aCoinRank !== bCoinRank) {
+          return aCoinRank - bCoinRank;
+        }
+      }
+
       // 同状态下按创建时间降序（最新的在前）
       const aTime = new Date(a.createdAt || a.endTime).getTime();
       const bTime = new Date(b.createdAt || b.endTime).getTime();

@@ -67,6 +67,30 @@ export async function getNotices(options?: { [key: string]: any }) {
   });
 }
 
+/** 更新卡片赔率 POST /api/card/updateCards */
+export async function updateCardData(body: { id: string; type: string }, options?: { [key: string]: any }) {
+  return request<any>('/api/updateCardData', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取卡片最新数据 POST /api/getCardData */
+export async function getCardData(body: { id: string }, options?: { [key: string]: any }) {
+  return request<any>('/api/getCardData', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 获取规则列表 GET /api/rule */
 export async function rule(
   params: {
@@ -95,6 +119,18 @@ export async function updateRule(options?: { [key: string]: any }) {
       method: 'update',
       ...(options || {}),
     },
+  });
+}
+
+/** 获取订单列表 POST /api/order/getOrders */
+export async function getOrders(body: { id: string; currency?: string }, options?: { [key: string]: any }) {
+  return request<{ data: any[]; success: boolean }>('/api/order/getOrders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
   });
 }
 

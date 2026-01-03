@@ -47,9 +47,16 @@ const ConfirmBetModal: React.FC<ConfirmBetModalProps> = ({
           <div className={styles.infoRow}>
             <div className={styles.infoLabel}>预测结果</div>
             <div className={styles.infoValue}>
-              <ArrowUpOutlined className={styles.greenArrow} />
-              <span className={styles.predictionValue}>{predictionResult.value}</span>
-              <span className={styles.choiceBadge}>{predictionResult.choice === 'yes' ? '是' : '否'}</span>
+              {/* <ArrowUpOutlined className={styles.greenArrow} /> */}
+              <span
+                className={`${styles.choiceBadge} ${
+                  predictionResult.choice === 'yes'
+                    ? styles.choiceBadgeRise
+                    : styles.choiceBadgeFall
+                }`}
+              >
+                {predictionResult.value}
+              </span>
             </div>
           </div>
           <div className={styles.infoRow}>

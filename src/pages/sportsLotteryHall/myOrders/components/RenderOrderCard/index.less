@@ -57,10 +57,17 @@
         padding: 4px 8px;
         font-size: 14px;
         line-height: 20px;
-        background-color: #00C95033;
-        border: 1px solid #00C9504D;
-        color: #00C950;
         margin-right: 7px;
+        &.rise {
+          background-color: #00C95033;
+          border: 1px solid #00C9504D;
+          color: #00C950;
+        }
+        &.fall {
+          background: linear-gradient(180deg, rgba(255, 77, 79, 0.2) 0%, rgba(255, 77, 79, 0.1) 100%);
+          border: 1px solid rgba(255, 77, 79, 0.5);
+          color: #ff4d4f;
+        }
       }
     }
   }
